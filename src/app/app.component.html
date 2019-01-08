@@ -1,10 +1,14 @@
-<app-header></app-header>
+<app-header (sectionEmitter)="sectionHandler($event)"></app-header>
 
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-lg-12">
-            <app-recipes></app-recipes>
-            <app-shopping-list></app-shopping-list>
+            <app-recipes
+              *ngIf=" currentSection === 'recipes' || currentSection === '' ">
+            </app-recipes>
+            <app-shopping-list
+              *ngIf=" currentSection === 'shopping' ">
+            </app-shopping-list>
         </div>
     </div>
 </div>

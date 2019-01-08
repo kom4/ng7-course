@@ -5,8 +5,8 @@
         </div>
         <div class="navbar-default">
             <ul class="nav navbar-nav">
-                <li><a href="#">Recipes</a></li>
-                <li><a href="#">Shopping List</a></li>
+                <li [ngClass]="{'active': section === 'recipes' || section === ''}"><a href="#" (click)="sectionShowHandler('recipes')">Recipes</a></li>
+                <li [ngClass]="{'active': section === 'shopping'}"><a href="#" (click)="sectionShowHandler('shopping')">Shopping List</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -17,6 +17,6 @@
                     </ul>
                 </li>
             </ul>
-        </div>   
+        </div>
     </div>
 </nav>
