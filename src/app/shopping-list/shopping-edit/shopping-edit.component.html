@@ -4,16 +4,34 @@
       <div class="row">
         <div class="col-sm-5 form-grouo">
           <label for="name">Name</label>
-          <input type="text" id="name" class="form-control">
+          <input 
+            #nameInput
+            type="text" 
+            id="name" 
+            class="form-control">
+            <span 
+              *ngIf="nameField"
+              class="warning">
+              Field required
+            </span>
         </div>
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
-          <input type="number" id="amount" class="form-control">
+          <input 
+            #amountInput
+            type="number" 
+            id="amount" 
+            class="form-control">
+            <span 
+              *ngIf="amountField"
+              class="warning">
+              Field required
+            </span>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <button class="btn btn-success" type="submit">Add</button>
+          <button class="btn btn-success" type="button" (click)="addNewIngredientHandler()">Add</button>
           <button class="btn btn-danger" type="button">Delete</button>
           <button class="btn btn-primary" type="submit">Clear</button>
         </div>
