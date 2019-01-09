@@ -5,13 +5,14 @@
     ></app-shopping-edit>
     <hr>
     <ul class="list-group">
-      <a 
-      class="list-group-item" 
+      <a
+      class="list-group-item"
       style="cursor: pointer"
-      *ngFor="let ingredient of ingredients">
-
+      *ngFor="let ingredient of ingredients; let last = last; let i = index"
+      [ngClass]="{'lastItemColor': last && addedNewIngredient, 'active': selected === i}"
+      (click)="highlightSelectedIngredient(i)">
       {{ ingredient.name }} ({{ ingredient.amount }})
-    
+
     </a>
     </ul>
   </div>

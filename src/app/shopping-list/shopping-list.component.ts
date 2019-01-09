@@ -8,6 +8,9 @@ import Ingredient from '../shared/ingredient.model';
 })
 export class ShoppingListComponent implements OnInit {
 
+  addedNewIngredient = false;
+  selected: number = null;
+
   ingredients: Ingredient[] = [
     new Ingredient('Apples', 5),
     new Ingredient('Tomatoes', 10)
@@ -19,9 +22,12 @@ export class ShoppingListComponent implements OnInit {
   }
 
   newIngredientToDatabase(ingredient: Ingredient) {
-    console.log(ingredient);
-    
     this.ingredients.push(ingredient);
+    this.addedNewIngredient = true;
+  }
+
+  highlightSelectedIngredient(index: number) {
+    this.selected = index;
   }
 
 }

@@ -1,0 +1,13 @@
+.lastItemColor {
+  animation: fadeOut 1s ease-in;
+}
+
+
+@keyframes fadeOut {
+  from {
+    background-color: rgb(4, 224, 4);
+  }
+  to {
+    background-color: white;
+  }
+}
