@@ -13,7 +13,10 @@ export class ShoppingListComponent implements OnInit {
 
   ingredients: Ingredient[] = [
     new Ingredient('Apples', 5),
-    new Ingredient('Tomatoes', 10)
+    new Ingredient('Tomatoes', 10),
+    new Ingredient('Bread', 4),
+    new Ingredient('Potato', 2),
+    new Ingredient('Carrot', 6)
   ];
 
   constructor() { }
@@ -29,5 +32,6 @@ export class ShoppingListComponent implements OnInit {
   highlightSelectedIngredient(index: number) {
     this.selected = index;
   }
+
 
 }

@@ -1,6 +1,7 @@
 <div class="row">
   <div class="col-xs-10">
     <app-shopping-edit
+      (filterIngredients)="setFilter($event)"
       (addNewIngredient)="newIngredientToDatabase($event)"
     ></app-shopping-edit>
     <hr>
@@ -12,8 +13,7 @@
       [ngClass]="{'lastItemColor': last && addedNewIngredient, 'active': selected === i}"
       (click)="highlightSelectedIngredient(i)">
       {{ ingredient.name }} ({{ ingredient.amount }})
-
-    </a>
+      </a>
     </ul>
   </div>
 </div>

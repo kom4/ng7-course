@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-md-5">
-    <app-recipe-list    
+    <app-recipe-list
     (recipeToDisplay)="sendRecipeToDetails($event)">
   </app-recipe-list>
   </div>
   <div class="col-md-7">
     <app-recipe-detail
-      *ngIf="recipeToDetails; else info" 
+      *ngIf="recipeToDetails; else info"
       [recipe]="recipeToDetails">
     </app-recipe-detail>
     <ng-template #info>
-      <p>Select a recipe!</p>
+      <p class="h3 text-center">Select a recipe!</p>
     </ng-template>
   </div>
 </div>

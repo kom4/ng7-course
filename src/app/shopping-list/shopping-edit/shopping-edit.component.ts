@@ -11,6 +11,7 @@ export class ShoppingEditComponent implements OnInit {
   @ViewChild('nameInput') name: ElementRef;
   @ViewChild('amountInput') amount: ElementRef;
   @Output() addNewIngredient = new EventEmitter<Ingredient>();
+  @Output() filterIngredients = new EventEmitter<string>();
   @Input() selectedIngredient: Ingredient;
   nameField = false;
   amountField = false;
@@ -37,6 +38,10 @@ export class ShoppingEditComponent implements OnInit {
     this.amount.nativeElement.value = '';
     this.nameField = false;
     this.amountField = false;
+  }
+
+  onInputChangeHandler() {
+    this.filterIngredients.emit(this.name.nativeElement.value);
   }
 
 }
