@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import Ingredient from 'src/app/shared/ingredient.model';
+import { ShoppingListService } from '../shopping-list.service';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -8,15 +9,13 @@ import Ingredient from 'src/app/shared/ingredient.model';
 })
 export class ShoppingEditComponent implements OnInit {
 
+  constructor(private shoppingListService: ShoppingListService) { }
+
   @ViewChild('nameInput') name: ElementRef;
   @ViewChild('amountInput') amount: ElementRef;
-  @Output() addNewIngredient = new EventEmitter<Ingredient>();
-  @Output() filterIngredients = new EventEmitter<string>();
-  @Input() selectedIngredient: Ingredient;
+  // @Input() selectedIngredient: Ingredient;
   nameField = false;
   amountField = false;
-
-  constructor() { }
 
   ngOnInit() {
   }
@@ -25,7 +24,7 @@ export class ShoppingEditComponent implements OnInit {
     const name = this.name.nativeElement.value;
     const amount = this.amount.nativeElement.value;
     if (name.length > 0 && amount > 0) {
-      this.addNewIngredient.emit(new Ingredient(name, amount));
+      this.shoppingListService.newIngredientToDatabase(new Ingredient(name, amount));
       this.resetValues();
     } else {
       this.nameField = name ? false : true;
@@ -38,10 +37,6 @@ export class ShoppingEditComponent implements OnInit {
     this.amount.nativeElement.value = '';
     this.nameField = false;
     this.amountField = false;
-  }
-
-  onInputChangeHandler() {
-    this.filterIngredients.emit(this.name.nativeElement.value);
   }
 
 }

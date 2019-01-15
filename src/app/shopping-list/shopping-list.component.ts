@@ -1,36 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 import Ingredient from '../shared/ingredient.model';
+import { ShoppingListService } from './shopping-list.service';
 
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent implements OnInit {
+export class ShoppingListComponent implements OnInit, DoCheck {
 
-  addedNewIngredient = false;
+  constructor(private shoppingListService: ShoppingListService) {}
+
   selected: number = null;
-
-  ingredients: Ingredient[] = [
-    new Ingredient('Apples', 5),
-    new Ingredient('Tomatoes', 10),
-    new Ingredient('Bread', 4),
-    new Ingredient('Potato', 2),
-    new Ingredient('Carrot', 6)
-  ];
-
-  constructor() { }
+  ingredients: Ingredient[] = [];
+  addedNewIngredient = false;
 
   ngOnInit() {
+    this.ingredients = this.shoppingListService.getIngredients();
+    this.shoppingListService.ingredientsChanged.subscribe((ingredients: Ingredient[]) => {
+      this.ingredients = ingredients;
+    });
+    this.shoppingListService.addNewIngredient.subscribe(() => {
+      this.addedNewIngredient = true;
+    });
   }
 
-  newIngredientToDatabase(ingredient: Ingredient) {
-    this.ingredients.push(ingredient);
-    this.addedNewIngredient = true;
+  ngDoCheck() {
+    this.selected = this.shoppingListService.selectedIngredient;
   }
 
-  highlightSelectedIngredient(index: number) {
-    this.selected = index;
+
+  setSelected(index: number) {
+    this.shoppingListService.selectedIngredient = index;
   }
 
 
