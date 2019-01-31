@@ -6,12 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
   title = 'ng7-project';
-  currentSection = 'recipes';
-
-  sectionHandler(event) {
-    this.currentSection = event;
-  }
-
 
 }

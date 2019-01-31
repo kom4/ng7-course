@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import Ingredient from '../shared/ingredient.model';
 import { ShoppingListService } from './shopping-list.service';
 
@@ -7,7 +7,7 @@ import { ShoppingListService } from './shopping-list.service';
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.css']
 })
-export class ShoppingListComponent implements OnInit, DoCheck {
+export class ShoppingListComponent implements OnInit {
 
   constructor(private shoppingListService: ShoppingListService) {}
 
@@ -16,22 +16,25 @@ export class ShoppingListComponent implements OnInit, DoCheck {
   addedNewIngredient = false;
 
   ngOnInit() {
+
     this.ingredients = this.shoppingListService.getIngredients();
     this.shoppingListService.ingredientsChanged.subscribe((ingredients: Ingredient[]) => {
       this.ingredients = ingredients;
     });
+
     this.shoppingListService.addNewIngredient.subscribe(() => {
       this.addedNewIngredient = true;
     });
-  }
 
-  ngDoCheck() {
-    this.selected = this.shoppingListService.selectedIngredient;
+    this.shoppingListService.selectedIngredient.subscribe((index: number) => {
+      this.selected = index;
+    });
+
   }
 
 
   setSelected(index: number) {
-    this.shoppingListService.selectedIngredient = index;
+    this.shoppingListService.selectedIngredient.next(index);
   }
 
 

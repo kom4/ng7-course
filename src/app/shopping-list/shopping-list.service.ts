@@ -1,56 +1,65 @@
 import Ingredient from '../shared/ingredient.model';
-import { EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs';
 
 export class ShoppingListService {
 
-  selectedIngredient: number = null;
-  addNewIngredient = new EventEmitter<any>();
-  ingredientsChanged = new EventEmitter<Ingredient[]>();
+  selectedIngredient = new Subject<number>();
+  ingredientsChanged = new Subject<Ingredient[]>();
+  addNewIngredient = new Subject();
 
-  private ingredients: Ingredient[] = [
-    new Ingredient('Meat', 5),
-    new Ingredient('Tomatoes', 10),
-    new Ingredient('Salad', 4),
-
-    // new Ingredient('Potato', 2),
-    // new Ingredient('Apples', 5),
-    // new Ingredient('Tomatoes', 10),
-    // new Ingredient('Carrot', 6)
-  ];
+  private ingredients: Ingredient[] = [];
 
   newIngredientToDatabase(ingredient: Ingredient) {
-    this.ingredients.push(ingredient);
-    this.addNewIngredient.emit();
-    this.ingredientsChanged.emit(this.ingredients);
+    const index = this.ingredients.findIndex((ing) => {
+      return ing.name.toLowerCase() === ingredient.name.toLowerCase();
+    });
+    if (index > -1) {
+      this.ingredients[index].amount += ingredient.amount;
+    } else {
+      this.ingredients.push(ingredient);
+      this.addNewIngredient.next();
+      this.ingredientsChanged.next(this.ingredients);
+    }
   }
 
   getIngredients() {
     return [...this.ingredients];
   }
 
+  deleteIngredient(index: number) {
+    this.ingredients.splice(index, 1);
+    this.ingredientsChanged.next(this.ingredients);
+    this.selectedIngredient.next(null);
+  }
+
   setIngredients(newIngredients: Ingredient[]) {
 
-    let ingredient: Ingredient;
+    if (this.ingredients.length === 0) {
+      this.ingredients = newIngredients;
+      return;
+    }
 
-    this.ingredients.map((oldIng) => {
+    this.ingredients.forEach((oldIng, index) => {
 
-      ingredient = newIngredients.find((newIng) => {
-        return oldIng.name === newIng.name;
+      const newIngIndex = newIngredients.findIndex((newIng) => {
+        return oldIng.name.toLowerCase() === newIng.name.toLowerCase();
       });
 
-      console.log(ingredient);
+      if (newIngIndex >= 0) {
+        this.ingredients[index].amount += newIngredients[newIngIndex].amount;
+      }
 
+    });
 
-     });
+    newIngredients.forEach((newIng) => {
+      const oldIngIndex = this.ingredients.findIndex((oldIng) => {
+        return newIng.name.toLowerCase() === oldIng.name.toLowerCase();
+      });
 
-    // this.ingredients = newIngredients;
-    // console.log(
-    //  this.ingredients.find((ing) => {
-
-    //   return ing.amount = 2;
-    // }));
-
-
+      if (oldIngIndex < 0 ) {
+        this.ingredients.push(newIng);
+      }
+    });
 
   }
 

@@ -1,37 +1,39 @@
 <div class="row">
   <div class="col-xs-12">
-    <form>
+    <form [formGroup]="form" (ngSubmit)="addNewIngredientHandler()">
       <div class="row">
-        <div class="col-sm-5 form-grouo">
+        <div class="col-sm-5 form-group">
           <label for="name">Name</label>
           <input
-            #nameInput
+            formControlName="ingredientName"
+            name="name"
             type="text"
             class="form-control">
-            <span
-              *ngIf="nameField"
-              class="warning">
-              Field required
-            </span>
         </div>
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
           <input
-            #amountInput
+            formControlName="ingredientAmount"
+            name="amount"
             type="number"
             class="form-control">
-            <span
-              *ngIf="amountField"
-              class="warning">
-              Field required
-            </span>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <button class="btn btn-success" type="button" (click)="addNewIngredientHandler()">Add</button>
-          <button class="btn btn-danger" type="button" >Delete</button>
-          <button class="btn btn-primary" type="submit">Clear</button>
+          <button
+            [disabled]="form.invalid"
+            class="btn btn-success"
+            type="submit">Add</button>
+          <button
+            [disabled]="!(selectedIngredient !== null && selectedIngredient >= 0)"
+            class="btn btn-danger"
+            type="button"
+            (click)="deleteIngredient()">Delete</button>
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="clear()">Clear</button>
         </div>
       </div>
     </form>

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import Ingredient from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -11,32 +12,40 @@ export class ShoppingEditComponent implements OnInit {
 
   constructor(private shoppingListService: ShoppingListService) { }
 
-  @ViewChild('nameInput') name: ElementRef;
-  @ViewChild('amountInput') amount: ElementRef;
-  // @Input() selectedIngredient: Ingredient;
-  nameField = false;
-  amountField = false;
+  form: FormGroup;
+  selectedIngredient = null;
 
   ngOnInit() {
+    this.shoppingListService.selectedIngredient.subscribe((index) => {
+      if (index !== null) {
+        this.selectedIngredient = index;
+      } else {
+        this.selectedIngredient = null;
+      }
+    });
+
+    this.form = new FormGroup({
+      'ingredientName': new FormControl(null, Validators.required),
+      'ingredientAmount': new FormControl(null, Validators.required)
+    });
   }
 
   addNewIngredientHandler() {
-    const name = this.name.nativeElement.value;
-    const amount = this.amount.nativeElement.value;
-    if (name.length > 0 && amount > 0) {
-      this.shoppingListService.newIngredientToDatabase(new Ingredient(name, amount));
-      this.resetValues();
-    } else {
-      this.nameField = name ? false : true;
-      this.amountField = amount ? false : true;
-    }
+    this.shoppingListService.
+      newIngredientToDatabase(new Ingredient(
+        this.form.get('ingredientName').value,
+        this.form.get('ingredientAmount').value
+      ));
+    this.form.reset();
   }
 
-  resetValues() {
-    this.name.nativeElement.value = '';
-    this.amount.nativeElement.value = '';
-    this.nameField = false;
-    this.amountField = false;
+  clear() {
+    this.form.reset();
+    this.shoppingListService.selectedIngredient.next(null);
+  }
+
+  deleteIngredient() {
+    this.shoppingListService.deleteIngredient(this.selectedIngredient);
   }
 
 }
