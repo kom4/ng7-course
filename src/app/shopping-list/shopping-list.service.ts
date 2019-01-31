@@ -5,7 +5,7 @@ export class ShoppingListService {
 
   selectedIngredient = new Subject<number>();
   ingredientsChanged = new Subject<Ingredient[]>();
-  addNewIngredient = new Subject();
+  addNewIngredient = new Subject<number>();
 
   private ingredients: Ingredient[] = [];
 
@@ -15,9 +15,9 @@ export class ShoppingListService {
     });
     if (index > -1) {
       this.ingredients[index].amount += ingredient.amount;
+      this.addNewIngredient.next(index);
     } else {
       this.ingredients.push(ingredient);
-      this.addNewIngredient.next();
       this.ingredientsChanged.next(this.ingredients);
     }
   }

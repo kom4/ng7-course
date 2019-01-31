@@ -7,8 +7,8 @@
       <a
       class="list-group-item"
       style="cursor: pointer"
-      *ngFor="let ingredient of ingredients; let last = last; let i = index"
-      [ngClass]="{'lastItemColor': last && addedNewIngredient, 'active': selected === i}"
+      *ngFor="let ingredient of ingredients; let i = index"
+      [ngClass]="{'highlighted': addedNewIngredient === i, 'active': selected === i}"
       (click)="setSelected(i)">
       {{ ingredient.name }} ({{ ingredient.amount }})
       </a>
