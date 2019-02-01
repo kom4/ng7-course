@@ -6,6 +6,7 @@
           <label for="name">Name</label>
           <input
             ngModel
+            [ngModel]="ingredientName"
             required
             name="name"
             type="text"
@@ -16,7 +17,9 @@
           <label for="amount">Amount</label>
           <input
             ngModel
+            [ngModel]="ingredientAmount"
             required
+            pattern="^[1-9]+[0-9]*$"
             name="amount"
             type="number"
             class="form-control">
@@ -27,7 +30,7 @@
           <button
             [disabled]="form.invalid"
             class="btn btn-success"
-            type="submit">Add</button>
+            type="submit">{{ selectedIngredient !== null ? 'Edit' : 'Add' }}</button>
           <button
             [disabled]="!(selectedIngredient !== null && selectedIngredient >= 0)"
             class="btn btn-danger"

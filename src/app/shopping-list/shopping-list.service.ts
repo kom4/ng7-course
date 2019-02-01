@@ -22,14 +22,26 @@ export class ShoppingListService {
     }
   }
 
+  editIngredients(name: string, amount: number, index: number) {
+    this.ingredients[index].name = name;
+    this.ingredients[index].amount = amount;
+    this.addNewIngredient.next(index);
+    this.selectedIngredient.next(null);
+  }
+
   getIngredients() {
     return [...this.ingredients];
+  }
+
+  getSingleIngredient(index: number) {
+    return this.ingredients[index];
   }
 
   deleteIngredient(index: number) {
     this.ingredients.splice(index, 1);
     this.ingredientsChanged.next(this.ingredients);
     this.selectedIngredient.next(null);
+    this.addNewIngredient.next(null);
   }
 
   setIngredients(newIngredients: Ingredient[]) {
