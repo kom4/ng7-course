@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import Ingredient from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
-import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { RecipeService } from '../../recipes/recipe.service';
+
 
 @Component({
   selector: 'app-shopping-edit',
@@ -12,29 +12,34 @@ import { RecipeService } from '../../recipes/recipe.service';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  constructor(
-    private shoppingListService: ShoppingListService
-    ) { }
+  constructor(private shoppingListService: ShoppingListService) { }
 
+  @ViewChild('form') form: NgForm;
   selectedIngredient = null;
   selectedSubscription: Subscription;
-  ingredientName = null;
-  ingredientAmount = null;
+  ingredient: Ingredient;
+  nameIsTaken = false;
+
 
   ngOnInit() {
     this.selectedSubscription = this.shoppingListService.selectedIngredient.subscribe((index) => {
       if (index !== null) {
+        this.form.reset();
         this.selectedIngredient = index;
         const ingredient = this.shoppingListService.getSingleIngredient(index);
-        this.ingredientName = ingredient.name;
-        this.ingredientAmount = ingredient.amount;
+        this.form.setValue({
+          'name': ingredient.name,
+          'amount': ingredient.amount
+        });
       } else {
         this.selectedIngredient = null;
       }
+      this.nameIsTaken = false;
     });
   }
 
-  addNewIngredientHandler(form: NgForm) {
+
+  ingredientHandler(form: NgForm) {
     if (this.selectedIngredient === null) {
       this.shoppingListService.
         newIngredientToDatabase(new Ingredient(
@@ -43,9 +48,16 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
         ));
       form.reset();
     } else {
-      this.shoppingListService.editIngredients(form.value.name, form.value.amount, this.selectedIngredient);
-      this.ingredientName = null;
-      this.ingredientAmount = null;
+      this.ingredient = this.shoppingListService.getSingleIngredient(this.selectedIngredient);
+      if ((this.ingredient.name.toLowerCase() === form.value.name.toLowerCase()) || (this.shoppingListService.checkIfNameIsTaken(form.value.name) === -1)) {
+        this.ingredient = new Ingredient(form.value.name, form.value.amount);
+        this.shoppingListService.editIngredient(this.selectedIngredient, this.ingredient);
+        this.form.reset();
+        this.nameIsTaken = false;
+        return;
+      } else {
+        this.nameIsTaken = true;
+      }
     }
   }
 
@@ -53,13 +65,14 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   clear(form: NgForm) {
     form.reset();
     this.shoppingListService.selectedIngredient.next(null);
+    this.nameIsTaken = false;
   }
 
 
   deleteIngredient() {
     this.shoppingListService.deleteIngredient(this.selectedIngredient);
-    this.ingredientName = null;
-    this.ingredientAmount = null;
+    this.form.reset();
+    this.nameIsTaken = false;
   }
 
 

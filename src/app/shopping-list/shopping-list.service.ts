@@ -18,13 +18,20 @@ export class ShoppingListService {
       this.addNewIngredient.next(index);
     } else {
       this.ingredients.push(ingredient);
-      this.ingredientsChanged.next(this.ingredients);
+      this.ingredientsChanged.next([...this.ingredients]);
     }
   }
 
-  editIngredients(name: string, amount: number, index: number) {
-    this.ingredients[index].name = name;
-    this.ingredients[index].amount = amount;
+  checkIfNameIsTaken(name: string): number {
+    return this.ingredients.findIndex((ing) => {
+      return name.toLowerCase() === ing.name.toLowerCase();
+    });
+  }
+
+
+  editIngredient(index: number, ingredient: Ingredient) {
+    this.ingredients[index] = ingredient;
+    this.ingredientsChanged.next([...this.ingredients]);
     this.addNewIngredient.next(index);
     this.selectedIngredient.next(null);
   }
@@ -39,7 +46,7 @@ export class ShoppingListService {
 
   deleteIngredient(index: number) {
     this.ingredients.splice(index, 1);
-    this.ingredientsChanged.next(this.ingredients);
+    this.ingredientsChanged.next([...this.ingredients]);
     this.selectedIngredient.next(null);
     this.addNewIngredient.next(null);
   }
