@@ -20,6 +20,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   recipeIndex: number = null;
   addingNewIngredient = false;
   lastIngredientChanges: Subscription;
+  ingredientNames: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -40,7 +41,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         if (!(e.ctrlKey && e.keyCode === 86 || e.keyCode === 46 || e.ctrlKey && e.keyCode === 67 || e.ctrlKey && e.keyCode === 88)) {
           e.preventDefault();
         }
-
       });
     });
   }
@@ -78,20 +78,24 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   onDeleteIngredient(ingredientIndex: number) {
     (<FormArray>this.form.get('ingredients')).controls.splice(ingredientIndex, 1);
     this.recipeService.removeIngredientFromRecipe(this.recipeIndex, ingredientIndex);
+    this.addingNewIngredient = false;
   }
 
 
   onAddNewIngredient() {
+
     if (!this.addingNewIngredient) {
       this.addingNewIngredient = true;
       if (this.lastIngredientChanges)  {
         this.lastIngredientChanges.unsubscribe();
       }
+
     (<FormArray>this.form.get('ingredients')).controls.push(
       new FormGroup({
-        'ingredientName': new FormControl(null, Validators.required),
+        'ingredientName': new FormControl(null, [Validators.required, this.isIngredientNameTaken.bind(this)]),
         'ingredientAmount': new FormControl(null, Validators.required)
       }));
+
       const length = (<FormArray>this.form.get('ingredients')).length;
       this.lastIngredientChanges = (<FormArray>this.form.get('ingredients'))
         .controls[length - 1].statusChanges.subscribe((status: string) => {
@@ -102,10 +106,12 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         }
       });
     }
+
     setTimeout(() => {
       const ingredientInputs = document.querySelectorAll('input[formControlname="ingredientName"]');
       (<HTMLElement>ingredientInputs[ingredientInputs.length - 1]).focus();
     } , 50);
+
   }
 
 
@@ -115,6 +121,28 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/recipes']);
     }
+  }
+
+
+  isIngredientNameTaken(control: FormControl): {[s: string]: boolean} {
+    if (control.value !== null) {
+      this.ingredientNames = [];
+      const arrayLength = (<FormArray>this.form.get('ingredients')).controls.length - 1;
+      (<FormArray>this.form.get('ingredients')).controls.forEach((ing: FormGroup, i: number) => {
+        if (i < arrayLength) {
+          const ingredientName: FormControl = <FormControl>ing.get('ingredientName');
+          this.ingredientNames.push(ingredientName.value);
+        }
+      });
+
+      const index = this.ingredientNames.findIndex((name: string) => {
+        return control.value.toLowerCase() === name.toLowerCase();
+      });
+      if (index >= 0) {
+        return {'nameIsTaken': true};
+      }
+    }
+    return null;
   }
 
 
@@ -128,12 +156,14 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   onSubmit() {
     const ingredients: Ingredient[] = [];
     (<FormArray>this.form.get('ingredients')).controls.forEach((control: FormControl) => {
-      ingredients.push(
-        new Ingredient(
-          control.get('ingredientName').value,
-          control.get('ingredientAmount').value
-        )
-      );
+      if (control.valid) {
+        ingredients.push(
+          new Ingredient(
+            control.get('ingredientName').value,
+            control.get('ingredientAmount').value
+          )
+        );
+      }
     });
     this.recipe = new Recipe(
       this.form.get('name').value,
