@@ -1,3 +1,14 @@
 textarea {
     resize: none;
 }
+
+.alert {
+    margin-bottom: 1px;
+    height: 30px;
+    line-height:30px;
+    padding:0px 15px;
+  }
+
+  /* input[type=text].ng-invalid.ng-dirty {
+      border: 1px solid orangered;
+  } */

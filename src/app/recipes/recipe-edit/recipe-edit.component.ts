@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, Data } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import Recipe from '../recipe.model';
 import { RecipeService } from '../recipe.service';
@@ -52,16 +52,48 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     const ingredients = this.recipe.ingredients;
     const ingredientsControls = ingredients.map((ing: Ingredient) => {
       return new FormGroup({
-        'ingredientName': new FormControl(ing.name, Validators.required),
-        'ingredientAmount': new FormControl(ing.amount, Validators.required)
+        'ingredientName': new FormControl(ing.name),
+        'ingredientAmount': new FormControl(ing.amount)
       });
     });
+
     this.form = new FormGroup({
       'name': new FormControl(this.recipe.name, Validators.required),
       'imagePath': new FormControl(this.recipe.imagePath),
       'description': new FormControl(this.recipe.description, Validators.required),
       'ingredients': new FormArray(ingredientsControls)
     });
+
+    (<FormArray>this.form.get('ingredients')).controls.forEach((ing: FormGroup, index: number) => {
+      ing.get('ingredientName').setValidators([Validators.required, this.isIngredientNameTaken.bind(this, index, true)]);
+      ing.get('ingredientAmount').setValidators(Validators.required);
+    });
+  }
+
+
+  isIngredientNameTaken(indexToIgnore: number, valid: boolean, control: FormControl): {[s: string]: boolean} {
+    if (control.value !== null) {
+      this.ingredientNames = [];
+      let arrayLength = (<FormArray>this.form.get('ingredients')).controls.length;
+      if (!valid) {
+        --arrayLength;
+      }
+      (<FormArray>this.form.get('ingredients')).controls.forEach((ing: FormGroup, i: number) => {
+        if (i < arrayLength && i !== indexToIgnore) {
+          const ingredientName = <FormControl>ing.get('ingredientName');
+          if (ingredientName.valid) {
+            this.ingredientNames.push(ingredientName.value);
+          }
+        }
+      });
+      const index = this.ingredientNames.findIndex((name: string) => {
+        return control.value.toLowerCase() === name.toLowerCase();
+      });
+      if (index >= 0) {
+        return {'nameIsTaken': true};
+      }
+    }
+    return null;
   }
 
 
@@ -77,7 +109,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   onDeleteIngredient(ingredientIndex: number) {
     (<FormArray>this.form.get('ingredients')).controls.splice(ingredientIndex, 1);
-    this.recipeService.removeIngredientFromRecipe(this.recipeIndex, ingredientIndex);
+    this.recipe.ingredients.splice(ingredientIndex, 1);
     this.addingNewIngredient = false;
   }
 
@@ -90,15 +122,15 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         this.lastIngredientChanges.unsubscribe();
       }
 
+    const length = (<FormArray>this.form.get('ingredients')).length;
     (<FormArray>this.form.get('ingredients')).controls.push(
       new FormGroup({
-        'ingredientName': new FormControl(null, [Validators.required, this.isIngredientNameTaken.bind(this)]),
+        'ingredientName': new FormControl(null, [Validators.required, this.isIngredientNameTaken.bind(this, length, false)]),
         'ingredientAmount': new FormControl(null, Validators.required)
       }));
 
-      const length = (<FormArray>this.form.get('ingredients')).length;
       this.lastIngredientChanges = (<FormArray>this.form.get('ingredients'))
-        .controls[length - 1].statusChanges.subscribe((status: string) => {
+        .controls[length].statusChanges.subscribe((status: string) => {
         if (status === 'VALID') {
           this.addingNewIngredient = false;
         } else {
@@ -121,28 +153,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/recipes']);
     }
-  }
-
-
-  isIngredientNameTaken(control: FormControl): {[s: string]: boolean} {
-    if (control.value !== null) {
-      this.ingredientNames = [];
-      const arrayLength = (<FormArray>this.form.get('ingredients')).controls.length - 1;
-      (<FormArray>this.form.get('ingredients')).controls.forEach((ing: FormGroup, i: number) => {
-        if (i < arrayLength) {
-          const ingredientName: FormControl = <FormControl>ing.get('ingredientName');
-          this.ingredientNames.push(ingredientName.value);
-        }
-      });
-
-      const index = this.ingredientNames.findIndex((name: string) => {
-        return control.value.toLowerCase() === name.toLowerCase();
-      });
-      if (index >= 0) {
-        return {'nameIsTaken': true};
-      }
-    }
-    return null;
   }
 
 

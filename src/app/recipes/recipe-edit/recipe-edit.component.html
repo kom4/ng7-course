@@ -4,7 +4,7 @@
       <div class="row" style="margin-bottom: 20px">
         <div class="col-xs-12">
           <button 
-            [disabled]="form.invalid"
+            
             type="submit" 
             class="btn btn-success" 
             style="margin-right: 5px">Save</button>
@@ -83,14 +83,14 @@
             <div class="col-xs-12">
               <div 
                 class="row" style="margin-bottom: 5px"
-                *ngFor="let ingredient of form.get('ingredients').controls; let i = index; let last = last"
+                *ngFor="let ingredient of form.get('ingredients').controls; let i = index"
                 [formGroupName]="i">              
                   <div class="col-xs-8">
                     <input           
                     formControlName="ingredientName"
                     type="text"    
                     class="form-control">
-                    <div *ngIf="last && ingredient.get('ingredientName').hasError('nameIsTaken')" class="alert alert-danger">
+                    <div *ngIf="ingredient.get('ingredientName').hasError('nameIsTaken')" class="alert alert-danger">
                       <small>Ingredient already exists.</small>
                     </div>
                   </div>

@@ -46,7 +46,7 @@ export class RecipeService {
   }
 
   getSingleRecipe(id: number): Recipe {
-    return this.recipes[id];
+    return JSON.parse(JSON.stringify(this.recipes[id]));
   }
 
   getIndexOfRecipe(recipe: Recipe): number {
