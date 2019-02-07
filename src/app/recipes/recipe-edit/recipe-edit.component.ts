@@ -51,7 +51,9 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   initializeFormForEditing() {
     this.recipeSubscription = this.route.data.subscribe((data: Recipe) => {
       this.recipe = data['recipe'];
-      this.recipeIndex = this.recipeService.getIndexOfRecipe(this.recipe);
+      this.recipeIndex = data['id'];
+      console.log(data);
+
     });
     this.imagePath = this.recipe.imagePath;
     const ingredients = this.recipe.ingredients;
@@ -122,6 +124,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   onDeleteIngredient(ingredientIndex: number) {
     (<FormArray>this.form.get('ingredients')).controls.splice(ingredientIndex, 1);
+    this.updateFormArrayValidity();
     this.addingNewIngredient = false;
   }
 
@@ -162,6 +165,8 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   onCancelEditForm() {
     if (this.recipeIndex !== null) {
+      console.log(this.recipeIndex);
+
       this.router.navigate(['/recipes', this.recipeIndex]);
     } else {
       this.router.navigate(['/recipes']);
@@ -173,7 +178,9 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     if (this.lastIngredientChanges)  {
       this.lastIngredientChanges.unsubscribe();
     }
-    this.recipeSubscription.unsubscribe();
+    if (this.recipeSubscription) {
+      this.recipeSubscription.unsubscribe();
+    }
   }
 
 
@@ -202,8 +209,10 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     }
 
     if (this.recipeIndex === null) {
+      console.log('creating new recipe');
+
       const newRecipeIndex = this.recipeService.createRecipe(this.recipe);
-      this.router.navigate(['/recipes', newRecipeIndex]);
+      this.router.navigate(['recipes', newRecipeIndex]);
     }
 
   }
