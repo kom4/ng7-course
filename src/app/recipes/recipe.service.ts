@@ -46,7 +46,10 @@ export class RecipeService {
   }
 
   getSingleRecipe(id: number): Recipe {
-    return JSON.parse(JSON.stringify(this.recipes[id]));
+    if (id < this.recipes.length) {
+      return JSON.parse(JSON.stringify(this.recipes[id]));
+    }
+    return null;
   }
 
   getIndexOfRecipe(recipe: Recipe): number {
@@ -63,6 +66,12 @@ export class RecipeService {
   updateRecipe(recipeIndex: number, recipe: Recipe) {
     this.recipes[recipeIndex] = recipe;
     this.recipeChangesSub.next(this.recipes);
+  }
+
+  createRecipe(recipe: Recipe): number {
+    this.recipes.push(recipe);
+    this.recipeChangesSub.next(this.recipes);
+    return this.recipes.length - 1;
   }
 
   removeIngredientFromRecipe(recipeIndex: number, ingredientIndex: number) {

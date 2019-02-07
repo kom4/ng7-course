@@ -3,14 +3,14 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="row" style="margin-bottom: 20px">
         <div class="col-xs-12">
-          <button 
-            
-            type="submit" 
-            class="btn btn-success" 
+          <button
+            [disabled]="form.invalid"
+            type="submit"
+            class="btn btn-success"
             style="margin-right: 5px">Save</button>
-          <button 
-            (click)="onCancelEditForm()" 
-            class="btn btn-danger" 
+          <button
+            (click)="onCancelEditForm()"
+            class="btn btn-danger"
             type="button">Cancel</button>
         </div>
       </div>
@@ -18,7 +18,7 @@
         <div class="col-xs-12">
           <div class="form-group">
             <label for="name">Name</label>
-            <input 
+            <input
               formControlName="name"
               type="text"
               autocomplete="off"
@@ -31,7 +31,7 @@
         <div class="col-xs-7">
           <div class="form-group">
             <label for="image">Image URL</label>
-            <textarea 
+            <textarea
               formControlName="imagePath"
               type="text"
               id="imagePath"
@@ -40,25 +40,26 @@
           </div>
           <div class="row">
             <div class="col-xs-12">
-              <button 
+              <button
                 type="button"
                 class="btn btn-success btn-sm"
                 (click)="onGetImage()">Get image</button>
             </div>
           </div>
-        </div>      
+        </div>
         <div class="col-xs-5">
           <img [src]="imagePath" class="img-responsive">
-        </div>       
+        </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea 
+            <textarea
               formControlName="description"
               type="text"
               id="name"
+              autocorrect="off"
               class="form-control"
               rows="6"></textarea>
           </div>
@@ -77,44 +78,44 @@
               Delete
             </div>
           </div>
-          <div             
+          <div
             class="row"
             formArrayName="ingredients">
             <div class="col-xs-12">
-              <div 
+              <div
                 class="row" style="margin-bottom: 5px"
                 *ngFor="let ingredient of form.get('ingredients').controls; let i = index"
-                [formGroupName]="i">              
+                [formGroupName]="i">
                   <div class="col-xs-8">
-                    <input           
+                    <input
                     formControlName="ingredientName"
-                    type="text"    
+                    type="text"
                     class="form-control">
                     <div *ngIf="ingredient.get('ingredientName').hasError('nameIsTaken')" class="alert alert-danger">
                       <small>Ingredient already exists.</small>
                     </div>
                   </div>
                   <div class="col-xs-2">
-                    <input         
-                    formControlName="ingredientAmount"           
-                    type="number"    
+                    <input
+                    formControlName="ingredientAmount"
+                    type="number"
                     class="form-control">
                   </div>
                   <div class="col-xs-2">
-                    <button 
+                    <button
                     class="btn btn-danger"
                     (click)="onDeleteIngredient(i)">X</button>
-                  </div>              
+                  </div>
               </div>
             </div>
             <div class="col-xs-12">
-              <button 
+              <button
               type="button"
               [disabled]="addingNewIngredient"
               class="btn btn-success btn-sm"
               (click)="onAddNewIngredient()">Add ingredient</button>
             </div>
-          </div>           
+          </div>
         </div>
       </div>
     </form>
