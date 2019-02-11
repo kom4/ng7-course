@@ -21,7 +21,7 @@ export class RecipeResolver implements Resolve<any> {
     if (recipe === null) {
       this.router.navigate(['recipes']);
     }
-    return recipe;
+    return [recipe, id];
   }
 
 }

@@ -16,6 +16,7 @@ import { ShoppingListService } from './shopping-list/shopping-list.service';
 import { RecipeService } from './recipes/recipe.service';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipeResolver } from './guards/recipeResolveGuard.service';
+import { CanDeactivateGuard } from './guards/can-deactivate-recipe.service';
 
 @NgModule({
    declarations: [
@@ -39,7 +40,8 @@ import { RecipeResolver } from './guards/recipeResolveGuard.service';
    providers: [
     ShoppingListService,
     RecipeService,
-    RecipeResolver
+    RecipeResolver,
+    CanDeactivateGuard
    ],
    bootstrap: [
       AppComponent

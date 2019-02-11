@@ -47,13 +47,21 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     });
   }
 
+  canDeactivate() {
+    if (this.recipe.name === this.form.get('name').value &&
+        this.recipe.description === this.form.get('description').value &&
+        this.recipe.imagePath === this.form.get('imagePath').value &&
+        JSON.stringify(this.recipe.ingredients) === JSON.stringify(this.getFormIngredients())) {
+          return true;
+    } else {
+      return window.confirm('Discharge all the changes?');
+    }
+  }
+
 
   initializeFormForEditing() {
     this.recipeSubscription = this.route.data.subscribe((data: Recipe) => {
-      this.recipe = data['recipe'];
-      this.recipeIndex = data['id'];
-      console.log(data);
-
+      [this.recipe, this.recipeIndex] = data['recipeData'];
     });
     this.imagePath = this.recipe.imagePath;
     const ingredients = this.recipe.ingredients;
@@ -73,7 +81,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
     (<FormArray>this.form.get('ingredients')).controls.forEach((ing: FormGroup, index: number) => {
       ing.get('ingredientName').setValidators([Validators.required, this.isIngredientNameTaken.bind(this, index, true)]);
-      ing.get('ingredientAmount').setValidators(Validators.required);
+      ing.get('ingredientAmount').setValidators([Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)]);
       ing.get('ingredientAmount').valueChanges.subscribe((status) => {
        this.updateFormArrayValidity();
       });
@@ -113,6 +121,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
 
   initializeFormForCreating() {
+    this.recipe = new Recipe();
     this.form = new FormGroup({
       'name': new FormControl(null, Validators.required),
       'imagePath': new FormControl(null),
@@ -141,7 +150,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     (<FormArray>this.form.get('ingredients')).controls.push(
       new FormGroup({
         'ingredientName': new FormControl(null, [Validators.required, this.isIngredientNameTaken.bind(this, length, false)]),
-        'ingredientAmount': new FormControl(null, Validators.required)
+        'ingredientAmount': new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
       }));
       this.updateFormArrayValidity();
       this.lastIngredientChanges = (<FormArray>this.form.get('ingredients'))
@@ -165,8 +174,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   onCancelEditForm() {
     if (this.recipeIndex !== null) {
-      console.log(this.recipeIndex);
-
       this.router.navigate(['/recipes', this.recipeIndex]);
     } else {
       this.router.navigate(['/recipes']);
@@ -184,7 +191,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   }
 
 
-  onSubmit() {
+  getFormIngredients (): Ingredient[] {
     const ingredients: Ingredient[] = [];
     (<FormArray>this.form.get('ingredients')).controls.forEach((control: FormControl) => {
       if (control.valid) {
@@ -196,6 +203,12 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         );
       }
     });
+    return ingredients;
+  }
+
+
+  onSubmit() {
+    const ingredients = this.getFormIngredients();
     this.recipe = new Recipe(
       this.form.get('name').value,
       this.form.get('description').value,
