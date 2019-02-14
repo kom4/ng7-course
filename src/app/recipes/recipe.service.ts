@@ -4,13 +4,16 @@ import Recipe from './recipe.model';
 import Ingredient from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Http } from '@angular/http';
 
 @Injectable()
 
 export class RecipeService {
 
   constructor(
-    private shoppingListService: ShoppingListService
+    private shoppingListService: ShoppingListService,
+    private http: Http
   ) {}
 
   recipeChangesSub = new Subject<Recipe[]>();
@@ -25,7 +28,7 @@ export class RecipeService {
         new Ingredient('Salad', 3),
         new Ingredient('Cheese', 2)
       ]),
-      new Recipe(
+      new Recipe (
         'A fresh potato salad',
         'Second recipe',
         'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/PotatoSalad.jpg/220px-PotatoSalad.jpg',
@@ -76,7 +79,22 @@ export class RecipeService {
 
   removeIngredientFromRecipe(recipeIndex: number, ingredientIndex: number) {
     this.recipes[recipeIndex].ingredients.splice(ingredientIndex, 1);
-
   }
+
+  saveRecipesToDatabase() {
+   return this.http.post('https://recipeapp-4444.firebaseio.com/recipes.json', this.recipes);
+  }
+
+  fetchRecipesFromDatabase() {
+    this.recipes = [];
+    this.http.get('https://recipeapp-4444.firebaseio.com/recipes.json')
+      .pipe(
+        map((recipe) => {
+         return recipe.json();
+        })
+      ).subscribe(recipes => this.recipes = recipes);
+
+   }
+
 
 }

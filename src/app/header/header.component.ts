@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { RecipeService } from '../recipes/recipe.service';
 
 @Component({
     selector: '<app-header>',
@@ -16,8 +17,17 @@ export class HeaderComponent implements OnInit {
     this.sectionEmitter.emit(this.section);
   }
 
-    constructor() {}
+    constructor(private recipeService: RecipeService) {}
 
     ngOnInit() {}
+
+    onSaveData() {
+      this.recipeService.saveRecipesToDatabase()
+        .subscribe();
+    }
+
+    onFetchData() {
+      this.recipeService.fetchRecipesFromDatabase();
+    }
 
 }

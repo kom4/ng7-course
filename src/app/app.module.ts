@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,7 +36,8 @@ import { CanDeactivateGuard } from './guards/can-deactivate-recipe.service';
       BrowserModule,
       AppRoutingModule,
       ReactiveFormsModule,
-      FormsModule
+      FormsModule,
+      HttpModule
    ],
    providers: [
     ShoppingListService,
