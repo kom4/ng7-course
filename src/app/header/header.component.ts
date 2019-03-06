@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { RecipeService } from '../recipes/recipe.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
     selector: '<app-header>',
@@ -17,7 +18,9 @@ export class HeaderComponent implements OnInit {
     this.sectionEmitter.emit(this.section);
   }
 
-    constructor(private recipeService: RecipeService) {}
+    constructor(
+      private recipeService: RecipeService,
+      private authService: AuthService) {}
 
     ngOnInit() {}
 

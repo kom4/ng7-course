@@ -18,6 +18,10 @@ import { RecipeService } from './recipes/recipe.service';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipeResolver } from './guards/recipeResolveGuard.service';
 import { CanDeactivateGuard } from './guards/can-deactivate-recipe.service';
+import { SignupComponent } from './auth/signup/signup.component';
+import { SigninComponent } from './auth/signin/signin.component';
+import { AuthService } from './auth/auth.service';
+import { AuthGuard } from './guards/auth-guard.service';
 
 @NgModule({
    declarations: [
@@ -31,6 +35,8 @@ import { CanDeactivateGuard } from './guards/can-deactivate-recipe.service';
       ShoppingEditComponent,
       DropdownDirective,
       RecipeEditComponent,
+      SignupComponent,
+      SigninComponent,
    ],
    imports: [
       BrowserModule,
@@ -43,7 +49,9 @@ import { CanDeactivateGuard } from './guards/can-deactivate-recipe.service';
     ShoppingListService,
     RecipeService,
     RecipeResolver,
-    CanDeactivateGuard
+    CanDeactivateGuard,
+    AuthService,
+    AuthGuard
    ],
    bootstrap: [
       AppComponent

@@ -1,22 +1,37 @@
 <nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a href="#" class="navbar-brand">Recipe Book</a>
-        </div>
-        <div class="navbar-default">
-            <ul class="nav navbar-nav">
-                <li routerLinkActive="active"><a routerLink="/recipes" style="cursor:pointer">Recipes</a></li>
-                <li routerLinkActive="active"><a routerLink="shopping-list" style="cursor:pointer">Shopping List</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li appDropdown class="dropdown">
-                    <a lass="dropdown-toggle" role="button" style="cursor:pointer">Manage <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a style="cursor:pointer" (click)="onSaveData()">Save Data</a></li>
-                        <li><a style="cursor:pointer" (click)="onFetchData()">Fetch Data</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <a routerLink="/recipes" class="navbar-brand">Recipe Book</a>
     </div>
+    <div class="navbar-default">
+      <ul class="nav navbar-nav">
+          <li routerLinkActive="active"><a routerLink="/recipes" style="cursor:pointer">Recipes</a></li>
+          <li routerLinkActive="active"><a routerLink="shopping-list" style="cursor:pointer">Shopping List</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+        <ng-template [ngIf]="!authService.isAuthenticated()">
+          <li><a routerLink="/signin">Login</a></li>
+          <li><a routerLink="/signup">Register</a></li>
+        </ng-template>
+
+        <ng-template [ngIf]="authService.isAuthenticated()">
+          <li appDropdown class="dropdown">
+              <a lass="dropdown-toggle" role="button" style="cursor:pointer">{{ authService.getCurrentUserEmail() }}<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a (click)="authService.logoutUser()" style="cursor:pointer">Logout</a></li>
+              </ul>
+          </li>
+          <li appDropdown class="dropdown">
+              <a lass="dropdown-toggle" role="button" style="cursor:pointer">Manage <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a style="cursor:pointer" (click)="onSaveData()">Save Data</a></li>
+                  <li><a style="cursor:pointer" (click)="onFetchData()">Fetch Data</a></li>
+              </ul>
+          </li>
+        </ng-template>
+
+      </ul>
+    </div>
+  </div>
 </nav>

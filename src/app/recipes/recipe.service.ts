@@ -5,7 +5,8 @@ import Ingredient from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Http } from '@angular/http';
+import { Http, Response } from '@angular/http';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 
@@ -13,34 +14,18 @@ export class RecipeService {
 
   constructor(
     private shoppingListService: ShoppingListService,
-    private http: Http
+    private http: Http,
+    private authService: AuthService
   ) {}
 
   recipeChangesSub = new Subject<Recipe[]>();
 
-  private recipes: Recipe[] = [
-    new Recipe (
-      'A delicious hamburger',
-      'This is simply a testing recipe',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/1024px-RedDot_Burger.jpg',
-      [
-        new Ingredient('Meat', 1),
-        new Ingredient('Salad', 3),
-        new Ingredient('Cheese', 2)
-      ]),
-      new Recipe (
-        'A fresh potato salad',
-        'Second recipe',
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/PotatoSalad.jpg/220px-PotatoSalad.jpg',
-      [
-        new Ingredient('Potato', 4),
-        new Ingredient('Tomato', 3),
-        new Ingredient('Onion', 2),
-        new Ingredient('Meat', 6)
-      ])
-  ];
+  private recipes: Recipe[] = [];
 
   getRecipes() {
+    if (this.recipes.length === 0) {
+      this.fetchRecipesFromDatabase();
+    }
     return [...this.recipes];
   }
 
@@ -63,17 +48,17 @@ export class RecipeService {
 
   deleteRecipe(recipeIndex: number) {
     this.recipes.splice(recipeIndex, 1);
-    this.recipeChangesSub.next(this.recipes);
+    this.recipeChangesSub.next(this.recipes.slice());
   }
 
   updateRecipe(recipeIndex: number, recipe: Recipe) {
     this.recipes[recipeIndex] = recipe;
-    this.recipeChangesSub.next(this.recipes);
+    this.recipeChangesSub.next(this.recipes.slice());
   }
 
   createRecipe(recipe: Recipe): number {
     this.recipes.push(recipe);
-    this.recipeChangesSub.next(this.recipes);
+    this.recipeChangesSub.next(this.recipes.slice());
     return this.recipes.length - 1;
   }
 
@@ -82,18 +67,26 @@ export class RecipeService {
   }
 
   saveRecipesToDatabase() {
-   return this.http.post('https://recipeapp-4444.firebaseio.com/recipes.json', this.recipes);
+    const token = this.authService.getToken();
+    return this.http.put('https://recipeapp-4444.firebaseio.com/recipes.json?auth=' + token, this.recipes);
   }
 
   fetchRecipesFromDatabase() {
-    this.recipes = [];
     this.http.get('https://recipeapp-4444.firebaseio.com/recipes.json')
-      .pipe(
-        map((recipe) => {
-         return recipe.json();
-        })
-      ).subscribe(recipes => this.recipes = recipes);
-
+      .pipe(map((response: Response) => {
+        return (<Recipe[]>response.json()).map((recipe) => {
+          if (recipe.ingredients) {
+            recipe.ingredients = recipe.ingredients.map((ingredient) => {
+              return new Ingredient(ingredient.name, ingredient.amount);
+            });
+          }
+          return recipe;
+        });
+      }))
+        .subscribe((recipes: Recipe[]) => {
+          this.recipes = recipes;
+          this.recipeChangesSub.next(this.recipes.slice());
+        });
    }
 
 
