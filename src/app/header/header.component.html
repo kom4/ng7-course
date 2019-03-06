@@ -10,12 +10,12 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
 
-        <ng-template [ngIf]="!authService.isAuthenticated()">
+        <ng-template [ngIf]="!isAuthenticated">
           <li><a routerLink="/signin">Login</a></li>
           <li><a routerLink="/signup">Register</a></li>
         </ng-template>
 
-        <ng-template [ngIf]="authService.isAuthenticated()">
+        <ng-template [ngIf]="isAuthenticated">
           <li appDropdown class="dropdown">
               <a lass="dropdown-toggle" role="button" style="cursor:pointer">{{ authService.getCurrentUserEmail() }}<span class="caret"></span></a>
               <ul class="dropdown-menu">

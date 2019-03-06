@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,8 @@ export class AuthService {
   }
 
   getToken() {
+    let i = 2;
+    console.log(i++);
     if (firebase.auth().currentUser === null) {
       return null;
     }
@@ -45,15 +48,30 @@ export class AuthService {
   }
 
   getCurrentUserEmail(): string {
+    let i = 0;
+    console.log(i++);
+    
     return firebase.auth().currentUser.email;
   }
 
   isAuthenticated() {
+    let i = 1;
+    console.log(i++);
     return this.token != null;
   }
 
   checkLocalStorageForTokens() {
-    // firebase.storage().app.stora
+    // const request = window.indexedDB.open('firebaseLocalStorageDb');
+    // request.onsuccess = () => {
+    //  const db = request.result;
+    //  const transaction = db.transaction(['firebaseLocalStorage']);
+    //  const objectStore = transaction.objectStore('firebaseLocalStorage');
+    //  const request2 = objectStore.getAll();
+    //  request2.onsuccess = (event) => {
+    //    this.token = request2.result.pop().value;
+    //    console.log(this.token);
+    //  };
+    // };
   }
 
   logoutUser() {
