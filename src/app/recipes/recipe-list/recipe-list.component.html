@@ -1,10 +1,10 @@
-<div *ngIf="authService.isAuthenticated()">
-  <div class="row">
-      <div class="col-xs-12">
-          <a routerLink="new" class="btn btn-success">New Recipe</a>
-      </div>
+<div class="row">
+<ng-template [ngIf]="isAuthenticated">
+  <div class="col-xs-12">
+    <a routerLink="new" class="btn btn-success">New Recipe</a>
   </div>
   <hr>
+</ng-template>
 </div>
 <div class="row">
     <div class="col-xs-12">

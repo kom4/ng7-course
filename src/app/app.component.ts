@@ -13,12 +13,24 @@ export class AppComponent implements OnInit {
 
   constructor(private authService: AuthService) {}
 
+  showSpinner = true;
+
   ngOnInit() {
     firebase.initializeApp({
       apiKey: 'AIzaSyBn8Gnz4CzWddwHBt0E03BxLzRcfd8aUK8',
       authDomain: 'recipeapp-4444.firebaseapp.com'
     });
 
-    this.authService.checkLocalStorageForTokens();
+    firebase.auth().onAuthStateChanged((user) => {
+      this.showSpinner = false;
+      if (user) {
+        user.getIdToken().then(
+          (token) => {
+            this.authService.token = token;
+            this.authService.authenticationChange.next();
+          }
+        );
+      }
+    });
   }
 }

@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 export class AuthService {
 
   token: string;
+  authenticationChange = new Subject<any>();
 
   constructor(private router: Router) {}
 
@@ -19,8 +20,8 @@ export class AuthService {
       );
   }
 
-  signinUser(email: string, password: string) {
-    firebase.auth().signInWithEmailAndPassword(email, password)
+  async signinUser(email: string, password: string) {
+    await firebase.auth().signInWithEmailAndPassword(email, password)
       .then(
         response => {
           this.router.navigate(['/recipes']);
@@ -32,11 +33,10 @@ export class AuthService {
       ).catch(
         error => console.log(error)
       );
+    this.authenticationChange.next();
   }
 
   getToken() {
-    let i = 2;
-    console.log(i++);
     if (firebase.auth().currentUser === null) {
       return null;
     }
@@ -48,36 +48,37 @@ export class AuthService {
   }
 
   getCurrentUserEmail(): string {
-    let i = 0;
-    console.log(i++);
-    
     return firebase.auth().currentUser.email;
   }
 
-  isAuthenticated() {
-    let i = 1;
-    console.log(i++);
+  isAuthenticated(): boolean {
     return this.token != null;
   }
 
-  checkLocalStorageForTokens() {
-    // const request = window.indexedDB.open('firebaseLocalStorageDb');
-    // request.onsuccess = () => {
-    //  const db = request.result;
-    //  const transaction = db.transaction(['firebaseLocalStorage']);
-    //  const objectStore = transaction.objectStore('firebaseLocalStorage');
-    //  const request2 = objectStore.getAll();
-    //  request2.onsuccess = (event) => {
-    //    this.token = request2.result.pop().value;
-    //    console.log(this.token);
-    //  };
-    // };
-  }
+  // checkLocalStorageForTokens() {
+  //   const request = window.indexedDB.open('firebaseLocalStorageDb');
+  //   request.onsuccess = () => {
+  //    const db = request.result;
+  //    const transaction = db.transaction(['firebaseLocalStorage']);
+  //    const objectStore = transaction.objectStore('firebaseLocalStorage');
+  //    const request2 = objectStore.getAll();
+  //    request2.onsuccess = (event) => {
+  //      if (request2.result.length > 0) {
+  //        this.token = request2.result.pop().value;
+  //       //  this.authenticationChange.next();
+  //       firebase.auth().currentUser.getIdToken().then((token) => { console.log(token );
+  //       });
+  //      }
+  //      console.log(this.token);
+  //    };
+  //   };
+  // }
 
   logoutUser() {
     firebase.auth().signOut();
     this.token = null;
     this.router.navigate(['/recipes']);
+    this.authenticationChange.next();
   }
 
 }

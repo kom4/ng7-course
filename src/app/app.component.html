@@ -1,5 +1,9 @@
-<app-header></app-header>
+<div *ngIf="showSpinner; else appTemplate" style="height: 100vh">
+    <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+</div>
 
+<ng-template #appTemplate>
+<app-header></app-header>
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-lg-12">
@@ -7,3 +11,4 @@
         </div>
     </div>
 </div>
+</ng-template>

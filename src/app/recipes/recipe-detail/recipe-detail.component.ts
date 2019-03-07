@@ -23,11 +23,20 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   recipe: Recipe;
   recipeIndex: number = null;
   recipeSubscription: Subscription;
+  isAuthenticated: boolean;
+  authSubscription: Subscription;
 
   ngOnInit() {
     this.recipeSubscription = this.route.data.subscribe((data: Recipe) => {
       [this.recipe, this.recipeIndex] = data['recipeData'];
     });
+    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authSubscription = this.authService.authenticationChange.subscribe(
+      () => {
+        this.isAuthenticated = this.authService.isAuthenticated();
+      }
+    );
+
   }
 
   ingredientsToShoppingList() {
@@ -42,6 +51,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.recipeSubscription.unsubscribe();
+    this.authSubscription.unsubscribe();
   }
 
 }
