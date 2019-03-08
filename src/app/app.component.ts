@@ -15,16 +15,16 @@ export class AppComponent implements OnInit {
 
   showSpinner = true;
 
-  ngOnInit() {
+ ngOnInit() {
     firebase.initializeApp({
       apiKey: 'AIzaSyBn8Gnz4CzWddwHBt0E03BxLzRcfd8aUK8',
       authDomain: 'recipeapp-4444.firebaseapp.com'
     });
 
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       this.showSpinner = false;
       if (user) {
-        user.getIdToken().then(
+        await user.getIdToken().then(
           (token) => {
             this.authService.token = token;
             this.authService.authenticationChange.next();

@@ -8,16 +8,41 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent implements OnInit {
+  constructor(private authService: AuthService) {}
 
-  constructor(private authService: AuthService) { }
+  showSpinner = false;
+  email = '';
+  password = '';
+  emailError = false;
+  passwordError = false;
+  errorMessage = '';
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSignIn(form: NgForm) {
+    this.showSpinner = true;
+    this.emailError = false;
+    this.passwordError = false;
     const email = form.value.email;
     const password = form.value.password;
-    this.authService.signinUser(email, password);
+
+    this.authService.signinUser(email, password).catch(error => {
+      this.showSpinner = false;
+      switch (error.code) {
+        case 'auth/wrong-password':
+          this.passwordError = true;
+          this.errorMessage = error.message;
+          this.password = '';
+          break;
+        case 'auth/user-not-found':
+          this.emailError = true;
+          this.errorMessage = error.message;
+          this.password = '';
+          break;
+        default:
+          break;
+      }
+    });
   }
 
 }
