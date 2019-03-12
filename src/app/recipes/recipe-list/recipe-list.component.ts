@@ -16,14 +16,19 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     private authService: AuthService) { }
 
   recipes: Recipe[];
+  showSpinner = true;
   recipeSubscription: Subscription;
   isAuthenticated: boolean;
   authSubscription: Subscription;
 
   ngOnInit() {
     this.recipes = this.recipeService.getRecipes();
+    if (this.recipes.length > 0) {
+      this.showSpinner = false;
+    }
     this.recipeSubscription = this.recipeService.recipeChangesSub.subscribe((recipes: Recipe[]) => {
       this.recipes = recipes;
+      this.showSpinner = false;
     });
 
     this.isAuthenticated = this.authService.isAuthenticated();

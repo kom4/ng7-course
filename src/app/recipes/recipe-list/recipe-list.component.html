@@ -1,17 +1,23 @@
-<div class="row">
-<ng-template [ngIf]="isAuthenticated">
-  <div class="col-xs-12">
-    <a routerLink="new" class="btn btn-success">New Recipe</a>
-  </div>
-  <hr>
-</ng-template>
+<div *ngIf="showSpinner; else appTemplate" style="height: 100vh">
+  <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 </div>
-<div class="row">
+
+<ng-template #appTemplate>
+  <div class="row">
+  <ng-template [ngIf]="isAuthenticated">
     <div class="col-xs-12">
-        <app-recipe-item
-            *ngFor="let recipeItem of recipes, let i = index"
-            [recipe]="recipeItem"
-            [index]="i">
-        </app-recipe-item>
+      <a routerLink="new" class="btn btn-success">New Recipe</a>
     </div>
-</div>
+    <hr>
+  </ng-template>
+  </div>
+  <div class="row">
+      <div class="col-xs-12">
+          <app-recipe-item
+              *ngFor="let recipeItem of recipes, let i = index"
+              [recipe]="recipeItem"
+              [index]="i">
+          </app-recipe-item>
+      </div>
+  </div>
+</ng-template>
