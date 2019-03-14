@@ -84,7 +84,7 @@
             <div class="col-xs-12">
               <div
                 class="row" style="margin-bottom: 5px"
-                *ngFor="let ingredient of form.get('ingredients').controls; let i = index"
+                *ngFor="let ingredient of ingredientControls; let i = index"
                 [formGroupName]="i">
                   <div class="col-xs-8">
                     <input

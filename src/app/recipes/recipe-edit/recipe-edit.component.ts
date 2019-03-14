@@ -194,6 +194,11 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   }
 
 
+  get ingredientControls() {
+    return (<FormArray>this.form.get('ingredients')).controls;
+  }
+
+
   getFormIngredients (): Ingredient[] {
     const ingredients: Ingredient[] = [];
     (<FormArray>this.form.get('ingredients')).controls.forEach((control: FormControl) => {

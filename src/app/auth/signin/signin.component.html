@@ -1,6 +1,4 @@
-<div *ngIf="showSpinner; else appTemplate" style="height: 100vh">
-  <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-</div>
+<app-spinner *ngIf="showSpinner; else appTemplate"></app-spinner>
 
 <ng-template #appTemplate>
   <div class="container">

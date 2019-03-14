@@ -1,11 +1,11 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { RecipeService } from '../recipes/recipe.service';
-import { AuthService } from '../auth/auth.service';
+import { RecipeService } from '../../recipes/recipe.service';
+import { AuthService } from '../../auth/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
     selector: '<app-header>',
-    templateUrl: '/header.component.html',
+    templateUrl: './header.component.html',
     // styleUrls: ['./header.component.css']
 })
 

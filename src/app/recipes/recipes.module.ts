@@ -10,18 +10,18 @@ import { RecipesRoutingModule } from './recipes-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-    declarations: [
-        RecipesComponent,
-        RecipeListComponent,
-        RecipeDetailComponent,
-        RecipeItemComponent,
-        RecipeEditComponent
-    ],
-    imports: [
-        ReactiveFormsModule,
-        RecipesRoutingModule,
-        SharedModule
-    ]
+  declarations: [
+    RecipesComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    RecipeItemComponent,
+    RecipeEditComponent
+  ],
+  imports: [
+    ReactiveFormsModule,
+    RecipesRoutingModule,
+    SharedModule
+  ]
 })
 
 export class RecipesModule { }

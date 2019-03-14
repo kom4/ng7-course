@@ -5,16 +5,17 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthRouting } from './auth-routing.module';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
 
 @NgModule({
     declarations: [
       SignupComponent,
-      SigninComponent,
+      SigninComponent
     ],
     imports: [
       CommonModule,
       AuthRouting,
-      FormsModule
+      FormsModule,
     ]
 })
 
