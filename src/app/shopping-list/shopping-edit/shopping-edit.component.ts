@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import Ingredient from 'src/app/shared/ingredient.model';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as ShoppingListActions from '../store/shopping-list.actions';
 import * as fromShoppingList from '../store/shopping-list.reducers';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -44,15 +45,22 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
       )));
     } else if ((this.ingredient.name.toLowerCase() === form.value.name.toLowerCase()) || (this.checkIfNameIsTaken(form.value.name) === -1)) {
       this.ingredient = new Ingredient(form.value.name, form.value.amount);
-      this.store.dispatch(new ShoppingListActions.HighlightNewIngredient(false));
       this.store.dispatch(new ShoppingListActions.UpdateIngredient(this.ingredient));
+      this.store.dispatch(new ShoppingListActions.HighlightNewIngredient(false));
     }
     this.clear();
   }
 
   checkIfNameIsTaken(name: string): number {
     let ingredients: Ingredient[];
-    this.store.select('shoppingList').subscribe(data => ingredients = data.ingredients);
+    this.store.select('shoppingList')
+    .pipe(map((data) => {
+      return data.ingredients;
+    }))
+    .subscribe(data => {
+      ingredients = data;
+    });
+
     return ingredients.findIndex((ing) => {
       return name.toLowerCase() === ing.name.toLowerCase();
     });
