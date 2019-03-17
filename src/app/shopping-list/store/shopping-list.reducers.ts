@@ -75,14 +75,14 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
             };
 
         case ShoppingListActions.UPDATE_INGREDIENT:
-            updatedIngredients[action.payload.index] = action.payload.ingredient;
+            updatedIngredients[state.editedIngredientIndex] = action.payload;
             return {
                 ...state,
                 ingredients: updatedIngredients
             };
 
         case ShoppingListActions.DELETE_INGREDIENT:
-            updatedIngredients.splice(action.payload, 1);
+            updatedIngredients.splice(state.editedIngredientIndex, 1);
             return {
                 ...state,
                 ingredients: updatedIngredients

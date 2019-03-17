@@ -44,8 +44,8 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
       )));
     } else if ((this.ingredient.name.toLowerCase() === form.value.name.toLowerCase()) || (this.checkIfNameIsTaken(form.value.name) === -1)) {
       this.ingredient = new Ingredient(form.value.name, form.value.amount);
-      this.store.dispatch(new ShoppingListActions.HighlightNewIngredient(false)); 
-      this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: this.selectedIngredient, ingredient: this.ingredient}));
+      this.store.dispatch(new ShoppingListActions.HighlightNewIngredient(false));
+      this.store.dispatch(new ShoppingListActions.UpdateIngredient(this.ingredient));
     }
     this.clear();
   }
@@ -65,7 +65,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   }
 
   deleteIngredient() {
-    this.store.dispatch(new ShoppingListActions.DeleteIngredient(this.selectedIngredient));
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient());
     this.store.dispatch(new ShoppingListActions.HighlightNewIngredient(false));
     this.clear();
   }
