@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, Data } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import Recipe from '../recipe.model';
 import { RecipeService } from '../recipe.service';
@@ -230,8 +230,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     }
 
     if (this.recipeIndex === null) {
-      console.log('creating new recipe');
-
       const newRecipeIndex = this.recipeService.createRecipe(this.recipe);
       this.router.navigate(['recipes', newRecipeIndex]);
     }

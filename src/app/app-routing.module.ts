@@ -6,7 +6,7 @@ import { HomeComponent } from './core/home/home.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'recipes', loadChildren: './recipes/recipes.module#RecipesModule' },
-  { path: 'shopping-list', loadChildren: './shopping-list/shopping-list.module#ShoppingListModule' },
+  { path: 'shopping-list', component: ShoppingListComponent },
   { path: '**', redirectTo: '' },
 ];
 

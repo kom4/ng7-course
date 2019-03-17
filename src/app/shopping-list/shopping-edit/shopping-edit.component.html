@@ -5,22 +5,17 @@
         <div class="col-sm-5 form-group">
           <label for="name">Name</label>
           <input
-            ngModel            
+            ngModel          
             required
             name="name"
             type="text"
             autocomplete="off"
             class="form-control">
-          <div 
-            class="alert alert-danger"
-            *ngIf="nameIsTaken">
-            Ingredient already exists.
-          </div>
         </div>
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
           <input
-            ngModel            
+            ngModel          
             required
             pattern="^[1-9]+[0-9]*$"
             name="amount"
@@ -43,7 +38,7 @@
             [disabled]="!(selectedIngredient !== null) && form.pristine"
             class="btn btn-primary"
             type="button"
-            (click)="clear(form)">Clear</button>
+            (click)="clear()">Clear</button>
         </div>
       </div>
     </form>

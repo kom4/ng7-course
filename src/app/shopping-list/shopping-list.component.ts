@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import Ingredient from '../shared/ingredient.model';
-import { ShoppingListService } from './shopping-list.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import * as ShoppingListActions from './store/shopping-list.actions';
+import * as fromShoppingList from './store/shopping-list.reducers';
 
 @Component({
   selector: 'app-shopping-list',
@@ -10,43 +12,28 @@ import { Subscription } from 'rxjs';
 })
 export class ShoppingListComponent implements OnInit, OnDestroy {
 
-  constructor(private shoppingListService: ShoppingListService) {}
+  constructor(private store: Store<fromShoppingList.AppState>) {}
 
-  selected: number = null;
-  ingredients: Ingredient[] = [];
-  addedNewIngredient = null;
-  addedIngredient: Subscription;
-  ingredientsChanged: Subscription;
-  selectedIngredient: Subscription;
+  selectedIngredient: number = null;
+  shoppingListState: Observable<{ingredients: Ingredient[]}>;
+  addedNewIngredient: boolean;
+  storeSubscription: Subscription;
 
   ngOnInit() {
-
-    this.ingredients = this.shoppingListService.getIngredients();
-
-    this.ingredientsChanged = this.shoppingListService.ingredientsChanged.subscribe((ingredients: Ingredient[]) => {
-      this.ingredients = ingredients;
-      this.addedNewIngredient = this.ingredients.length - 1;
+    this.shoppingListState = this.store.select('shoppingList');
+    this.storeSubscription = this.store.select('shoppingList').subscribe(data => {
+      this.selectedIngredient = data.editedIngredientIndex;
+      this.addedNewIngredient = data.addedNewIngredient;
     });
-
-    this.addedIngredient = this.shoppingListService.addNewIngredient.subscribe((value: number) => {
-      this.addedNewIngredient = value;
-    });
-
-    this.selectedIngredient = this.shoppingListService.selectedIngredient.subscribe((index: number) => {
-      this.selected = index;
-    });
-
   }
 
   setSelected(index: number) {
-    this.shoppingListService.selectedIngredient.next(index);
+    this.store.dispatch(new ShoppingListActions.SetEditedIngredient(index));
   }
 
   ngOnDestroy() {
-    this.addedIngredient.unsubscribe();
-    this.ingredientsChanged.unsubscribe();
-    this.selectedIngredient.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.HighlightNewIngredient(false));
+    this.storeSubscription.unsubscribe();
   }
-
 
 }

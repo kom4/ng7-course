@@ -1,11 +1,8 @@
 import { NgModule } from '@angular/core';
 import { SigninComponent } from './signin/signin.component';
 import { SignupComponent } from './signup/signup.component';
-import { SharedModule } from '../shared/shared.module';
 import { AuthRouting } from './auth-routing.module';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { SpinnerComponent } from '../shared/spinner/spinner.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -13,9 +10,8 @@ import { SpinnerComponent } from '../shared/spinner/spinner.component';
       SigninComponent
     ],
     imports: [
-      CommonModule,
-      AuthRouting,
-      FormsModule,
+      SharedModule,
+      AuthRouting
     ]
 })
 

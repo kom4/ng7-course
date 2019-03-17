@@ -1,4 +1,4 @@
-import { CanDeactivate, ActivatedRouteSnapshot } from '@angular/router';
+import { CanDeactivate } from '@angular/router';
 import { Observable } from 'rxjs';
 
 interface CanDeactivateRecipe {

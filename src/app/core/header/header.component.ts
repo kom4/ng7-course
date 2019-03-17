@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RecipeService } from '../../recipes/recipe.service';
 import { AuthService } from '../../auth/auth.service';
 import { Subscription } from 'rxjs';
@@ -11,10 +11,9 @@ import { Subscription } from 'rxjs';
 
 export class HeaderComponent implements OnInit, OnDestroy {
 
-  section = '';
   isAuthenticated: boolean;
   authSubscription: Subscription;
-  currentUserEmail = 'dd';
+  currentUserEmail = '';
 
     constructor(
       private recipeService: RecipeService,

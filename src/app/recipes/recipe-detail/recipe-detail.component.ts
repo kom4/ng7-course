@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import Recipe from '../recipe.model';
 import { RecipeService } from '../recipe.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
+import { Store } from '@ngrx/store';
+import * as ShoppingListActions from '../../shopping-list/store/shopping-list.actions';
+import * as fromShoppingList from '../../shopping-list/store/shopping-list.reducers';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -17,7 +19,8 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     private recipeService: RecipeService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store<fromShoppingList.AppState>
   ) { }
 
   recipe: Recipe;
@@ -41,7 +44,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   ingredientsToShoppingList() {
     const newIngredients = JSON.parse(JSON.stringify(this.recipe.ingredients));
-    this.recipeService.ingredientsToShoppingList(newIngredients);
+    this.store.dispatch(new ShoppingListActions.AddIngredients(newIngredients));
   }
 
   onDeleteRecipe(recipeIndex: number) {
