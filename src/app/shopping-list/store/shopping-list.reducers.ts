@@ -1,109 +1,103 @@
 import * as ShoppingListActions from './shopping-list.actions';
-import Ingredient from '../../shared/ingredient.model';
+import Ingredient from 'src/app/shared/ingredient.model';
 
 export interface AppState {
     shoppingList: State;
 }
 
-interface State {
+export interface State {
     ingredients: Ingredient[];
-    editedIngredient: Ingredient;
-    editedIngredientIndex: number;
-    addedNewIngredient: boolean;
+    selectedIngredient: Ingredient;
+    selectedIngredientIndex: number;
+    addedNewIngredient: number;
 }
 
 const initialState: State = {
-    ingredients: [
-        new Ingredient('Onion', 2),
-        new Ingredient('Meat', 3),
-        new Ingredient('Tomato', 12),
-        new Ingredient('Potato', 6),
-    ],
-    editedIngredient: null,
-    editedIngredientIndex: null,
-    addedNewIngredient: false
+    ingredients: [],
+    selectedIngredient: null,
+    selectedIngredientIndex: null,
+    addedNewIngredient: null
 };
 
-export function shoppingListReducer(state = initialState, action: ShoppingListActions.ShoppingListActions) {
-
-    let updatedIngredients = [...state.ingredients];
+export function shoppingListReducer(state = initialState, action: ShoppingListActions.Actions) {
+    let copiedIngredients = [...state.ingredients];
 
     switch (action.type) {
 
         case ShoppingListActions.ADD_INGREDIENT:
-            const index = updatedIngredients.findIndex((ing: Ingredient) => {
+            let index = copiedIngredients.findIndex((ing) => {
                 return ing.name.toLowerCase() === action.payload.name.toLowerCase();
             });
-            let isItNewIngredient: boolean;
             if (index > -1) {
-                updatedIngredients[index].amount += action.payload.amount;
-                isItNewIngredient = false;
+                copiedIngredients[index].amount += action.payload.amount;
             } else {
-                updatedIngredients.push(action.payload);
-                isItNewIngredient = true;
+                copiedIngredients.push(action.payload);
+                index = copiedIngredients.length - 1;
             }
             return {
                 ...state,
-                ingredients: updatedIngredients,
-                addedNewIngredient: isItNewIngredient
+                ingredients: copiedIngredients,
+                addedNewIngredient: index
             };
 
         case ShoppingListActions.ADD_INGREDIENTS:
-            if (updatedIngredients.length === 0) {
-                updatedIngredients = action.payload;
+            if (copiedIngredients.length === 0) {
+                copiedIngredients = action.payload;
             } else {
-                updatedIngredients.forEach((oldIng, oldIndex) => {
+                copiedIngredients.forEach((oldIng, oldIndex) => {
                     const newIngIndex = action.payload.findIndex((newIng) => {
                         return oldIng.name.toLowerCase() === newIng.name.toLowerCase();
                     });
                     if (newIngIndex >= 0) {
-                        updatedIngredients[oldIndex].amount += action.payload[newIngIndex].amount;
+                        copiedIngredients[oldIndex].amount += action.payload[newIngIndex].amount;
                     }
                 });
                 action.payload.forEach((newIng) => {
-                    const oldIngIndex = updatedIngredients.findIndex((oldIng) => {
+                    const oldIngIndex = copiedIngredients.findIndex((oldIng) => {
                         return newIng.name.toLowerCase() === oldIng.name.toLowerCase();
                     });
                     if (oldIngIndex < 0 ) {
-                        updatedIngredients.push(newIng);
+                        copiedIngredients.push(newIng);
                     }
                 });
             }
             return {
                 ...state,
-                ingredients: updatedIngredients
+                ingredients: copiedIngredients
             };
 
         case ShoppingListActions.UPDATE_INGREDIENT:
-            updatedIngredients[state.editedIngredientIndex] = action.payload;
+            copiedIngredients[state.selectedIngredientIndex] = action.payload;
             return {
                 ...state,
-                ingredients: updatedIngredients
+                ingredients: copiedIngredients,
+                selectedIngredient: null,
+                selectedIngredientIndex: null,
+                addedNewIngredient: state.selectedIngredientIndex,
             };
 
         case ShoppingListActions.DELETE_INGREDIENT:
-            updatedIngredients.splice(state.editedIngredientIndex, 1);
+            copiedIngredients.splice(state.selectedIngredientIndex, 1);
             return {
                 ...state,
-                ingredients: updatedIngredients
+                ingredients: copiedIngredients,
+                selectedIngredient: null,
+                selectedIngredientIndex: null,
+                addedNewIngredient: null,
             };
 
-        case ShoppingListActions.SET_EDITED_INGREDIENT:
-            const selectedIngredient = action.payload !== null ? updatedIngredients[action.payload] : null;
+        case ShoppingListActions.SET_SELECTED_INGREDIENT:
+            const selectedIngredient = action.payload !== null ? copiedIngredients[action.payload] : null;
             return {
                 ...state,
-                editedIngredient: selectedIngredient,
-                editedIngredientIndex: action.payload
-            };
-
-        case ShoppingListActions.HIGHLIGHT_NEW_INGREDIENT:
-            return {
-                ...state,
-                addedNewIngredient: action.payload
+                selectedIngredient: selectedIngredient,
+                selectedIngredientIndex: action.payload,
+                addedNewIngredient: null
             };
 
         default:
             return state;
+
     }
 
 }
