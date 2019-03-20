@@ -10,16 +10,16 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
 
-        <ng-template [ngIf]="!isAuthenticated">
+        <ng-template [ngIf]="!(authState | async).authenticated">
           <li routerLinkActive="active"><a routerLink="/signin">Login</a></li>
           <li routerLinkActive="active"><a routerLink="/signup">Register</a></li>
         </ng-template>
 
-        <ng-template [ngIf]="isAuthenticated">
+        <ng-template [ngIf]="(authState | async).authenticated">
           <li appDropdown class="dropdown">
-              <a lass="dropdown-toggle" role="button" style="cursor:pointer">{{ currentUserEmail }}<span class="caret"></span></a>
+              <a lass="dropdown-toggle" role="button" style="cursor:pointer">{{ (authState | async).email }}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a (click)="authService.logoutUser()" style="cursor:pointer">Logout</a></li>
+                <li><a (click)="onLogoutUser()" style="cursor:pointer">Logout</a></li>
               </ul>
           </li>
           <li appDropdown class="dropdown">

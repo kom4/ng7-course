@@ -4,7 +4,7 @@
 
 <ng-template #appTemplate>
   <div class="row">
-  <ng-template [ngIf]="isAuthenticated">
+  <ng-template [ngIf]="isAuthenticated | async">
     <div class="col-xs-12">
       <a routerLink="new" class="btn btn-success">New Recipe</a>
     </div>

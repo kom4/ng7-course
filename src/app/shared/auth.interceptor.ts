@@ -6,15 +6,24 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
+import { Store } from '@ngrx/store';
+
+import { AppState } from '../store/app.reducers';
+import { AuthState } from '../auth/store/auth.reducers';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService) {}
+  constructor(private store: Store<AppState>) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const copiedReq = req.clone({ params: req.params.set('auth', this.authService.getToken()) });
-    return next.handle(copiedReq);
+    return this.store.select('auth').pipe(switchMap((authState: AuthState) => {
+      if (authState.token !== null) {
+        const copiedReq = req.clone({ params: req.params.set('auth', authState.token) });
+        return next.handle(copiedReq);
+      }
+      return next.handle(req);
+    }));
   }
 }

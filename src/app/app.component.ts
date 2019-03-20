@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import * as firebase from 'firebase';
-import { AuthService } from './auth/auth.service';
+
+import { AuthState } from './auth/store/auth.reducers';
+import * as AuthActions from './auth/store/aut.actions';
 
 @Component({
   selector: 'app-root',
@@ -9,28 +12,36 @@ import { AuthService } from './auth/auth.service';
 })
 export class AppComponent implements OnInit {
 
-  title = 'ng7-project';
+  title = 'Recipe book';
 
-  constructor(private authService: AuthService) {}
+  constructor(private store: Store<AuthState>) {}
 
   showSpinner = true;
 
- ngOnInit() {
+ async ngOnInit() {
     firebase.initializeApp({
       apiKey: 'AIzaSyBn8Gnz4CzWddwHBt0E03BxLzRcfd8aUK8',
       authDomain: 'recipeapp-4444.firebaseapp.com'
     });
 
-    firebase.auth().onAuthStateChanged(async (user) => {
-      this.showSpinner = false;
-      if (user) {
-        await user.getIdToken().then(
-          (token) => {
-            this.authService.token = token;
-            this.authService.authenticationChange.next();
-          }
-        );
-      }
+    const promise = new Promise((resolve, rejcet) => {
+      firebase.auth().onAuthStateChanged((user) => {
+        this.showSpinner = false;
+        if (user) {
+          user.getIdToken().then(
+            (token) => {
+              const email = firebase.auth().currentUser.email;
+              this.store.dispatch(new AuthActions.LoginUser({email, token}));
+              resolve(true);
+            }
+          );
+        }
+      });
+
+    });
+    await promise.then((msg) => {
+      console.log('done');
+      
     });
   }
 }

@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import Ingredient from 'src/app/shared/ingredient.model';
 import * as fromShoppingList from '../store/shopping-list.reducers';
 import * as ShoppingListActions from '../store/shopping-list.actions';
+import * as fromApp from '../../store/app.reducers';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -14,7 +15,7 @@ import * as ShoppingListActions from '../store/shopping-list.actions';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  constructor(private store: Store<fromShoppingList.AppState>) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   @ViewChild('form') form: NgForm;
   shoppingListStateSubscription: Subscription;

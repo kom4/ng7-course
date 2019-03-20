@@ -2,11 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import Recipe from '../recipe.model';
 import { RecipeService } from '../recipe.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Store } from '@ngrx/store';
 import * as ShoppingListActions from '../../shopping-list/store/shopping-list.actions';
-import * as fromShoppingList from '../../shopping-list/store/shopping-list.reducers';
+import * as fromApp from '../../store/app.reducers';
+import { map } from 'rxjs/operators';
+import { AuthState } from '../../auth/store/auth.reducers';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -20,25 +22,22 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private store: Store<fromShoppingList.AppState>
+    private store: Store<fromApp.AppState>
   ) { }
 
   recipe: Recipe;
   recipeIndex: number = null;
   recipeSubscription: Subscription;
-  isAuthenticated: boolean;
-  authSubscription: Subscription;
+  isAuthenticated: Observable<boolean>;
 
   ngOnInit() {
     this.recipeSubscription = this.route.data.subscribe((data: Recipe) => {
       [this.recipe, this.recipeIndex] = data['recipeData'];
     });
-    this.isAuthenticated = this.authService.isAuthenticated();
-    this.authSubscription = this.authService.authenticationChange.subscribe(
-      () => {
-        this.isAuthenticated = this.authService.isAuthenticated();
-      }
-    );
+
+    this.isAuthenticated = this.store.select('auth').pipe(map((authState: AuthState) => {
+      return authState.authenticated;
+    }));
 
   }
 
@@ -56,7 +55,6 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.recipeSubscription.unsubscribe();
-    this.authSubscription.unsubscribe();
   }
 
 }

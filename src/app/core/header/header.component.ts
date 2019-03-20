@@ -1,7 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+
 import { RecipeService } from '../../recipes/recipe.service';
-import { AuthService } from '../../auth/auth.service';
-import { Subscription } from 'rxjs';
+import * as fromApp from '../../store/app.reducers';
+import * as fromAuth from '../../auth/store/auth.reducers';
+import * as AuthActions from '../../auth/store/aut.actions';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
     selector: '<app-header>',
@@ -9,28 +14,21 @@ import { Subscription } from 'rxjs';
     // styleUrls: ['./header.component.css']
 })
 
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
 
-  isAuthenticated: boolean;
-  authSubscription: Subscription;
-  currentUserEmail = '';
+  authState: Observable<fromAuth.AuthState>;
 
     constructor(
       private recipeService: RecipeService,
-      private authService: AuthService) {}
+      private authService: AuthService,
+      private store: Store<fromApp.AppState>) {}
 
     ngOnInit() {
-      this.isAuthenticated = this.authService.isAuthenticated();
-      if (this.isAuthenticated) {
-        this.currentUserEmail = this.authService.getCurrentUserEmail();
-      }
-      this.authSubscription = this.authService.authenticationChange.subscribe(
-        () => {
-          this.isAuthenticated = this.authService.isAuthenticated();
-          this.currentUserEmail = this.authService.getCurrentUserEmail();
-        }
-      );
+      this.authState = this.store.select('auth');
+    }
 
+    onLogoutUser() {
+      this.authService.logoutUser();
     }
 
     onSaveData() {
@@ -40,10 +38,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     onFetchData() {
       this.recipeService.fetchRecipesFromDatabase();
-    }
-
-    ngOnDestroy() {
-      this.authSubscription.unsubscribe();
     }
 
 }
