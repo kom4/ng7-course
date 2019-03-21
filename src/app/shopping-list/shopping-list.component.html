@@ -7,8 +7,8 @@
       <a
       class="list-group-item"
       style="cursor: pointer"
-      *ngFor="let ingredient of ingredients; let i = index"
-      [ngClass]="{'highlighted': addedNewIngredient === i, 'active': selected === i}"
+      *ngFor="let ingredient of (ingredients$ | async); let i = index"
+      [ngClass]="{'highlighted': (addedNewIngredient$ | async) === i, 'active': (selected$ | async) === i}"
       (click)="setSelected(i)">
       {{ ingredient.name }} ({{ ingredient.amount }})
       </a>

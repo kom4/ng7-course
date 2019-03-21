@@ -1,5 +1,6 @@
 import * as ShoppingListActions from './shopping-list.actions';
 import Ingredient from 'src/app/shared/ingredient.model';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface State {
     ingredients: Ingredient[];
@@ -9,7 +10,10 @@ export interface State {
 }
 
 const initialState: State = {
-    ingredients: [],
+    ingredients: [
+        new Ingredient('Apple', 3),
+        new Ingredient('Meat', 2)
+    ],
     selectedIngredient: null,
     selectedIngredientIndex: null,
     addedNewIngredient: null
@@ -97,3 +101,9 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
     }
 
 }
+
+export const getShoppingListState = createFeatureSelector<State>('shoppingList');
+export const getIngredients = createSelector(getShoppingListState, (state: State) => state.ingredients);
+export const getSelectedIngredient = createSelector(getShoppingListState, (state: State) => state.selectedIngredient);
+export const getSelectedIngredientIndex = createSelector(getShoppingListState, (state: State) => state.selectedIngredientIndex );
+export const getAddedNewIngredient = createSelector(getShoppingListState, (state: State) => state.addedNewIngredient );

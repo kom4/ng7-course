@@ -61,7 +61,6 @@ export class RecipeService {
   }
 
   saveRecipesToDatabase() {
-    const token = this.authService.getToken();
     return this.httpClient.put('https://recipeapp-4444.firebaseio.com/recipes.json', this.recipes);
   }
 
