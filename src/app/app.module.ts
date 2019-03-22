@@ -9,6 +9,8 @@ import { CoreModule } from './core/core.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/app.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth/store/auth.effects';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { reducers } from './store/app.reducers';
     ShoppingListModule,
     SharedModule,
     StoreModule.forRoot(reducers),
+    EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 10
     })

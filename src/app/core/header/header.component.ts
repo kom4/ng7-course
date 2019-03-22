@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { RecipeService } from '../../recipes/recipe.service';
 import * as fromApp from '../../store/app.reducers';
 import * as fromAuth from '../../auth/store/auth.reducers';
-import * as AuthActions from '../../auth/store/aut.actions';
+import * as AuthActions from '../../auth/store/auth.actions';
 import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import * as firebase from 'firebase';
 import * as fromAuth from '../auth/store/auth.reducers';
-import * as AuthActions from './store/aut.actions';
+import * as AuthActions from './store/auth.actions';
 
 @Injectable()
 export class AuthService {

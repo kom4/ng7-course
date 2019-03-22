@@ -11,15 +11,16 @@ import * as firebase from 'firebase';
 import * as fromApp from '../store/app.reducers';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate, OnDestroy {
   constructor(private store: Store<fromApp.AppState>, private router: Router) {}
+  authUnsubscribe: firebase.Unsubscribe;
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean> {
     return new Promise((resolve) => {
-      firebase.auth().onAuthStateChanged((user: firebase.User) => {
+      this.authUnsubscribe = firebase.auth().onAuthStateChanged((user: firebase.User) => {
         if (!user) {
           resolve(true);
         } else {
@@ -28,6 +29,10 @@ export class AuthGuard implements CanActivate {
         }
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.authUnsubscribe();
   }
 
 }
