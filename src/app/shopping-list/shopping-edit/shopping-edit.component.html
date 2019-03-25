@@ -33,7 +33,7 @@
           <button
             [disabled]="form.invalid"
             class="btn btn-success"
-            type="submit">{{ (selectedIngredient | async) !== null ? 'Update' : 'Add' }}</button>
+            type="submit">{{ selectedIngredient !== null ? 'Update' : 'Add' }}</button>
           <button
             [disabled]="!((selectedIngredient | async) !== null)"
             class="btn btn-danger"

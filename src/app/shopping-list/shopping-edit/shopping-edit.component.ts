@@ -7,7 +7,7 @@ import Ingredient from 'src/app/shared/ingredient.model';
 import * as fromShoppingList from '../store/shopping-list.reducers';
 import * as ShoppingListActions from '../store/shopping-list.actions';
 import * as fromApp from '../../store/app.reducers';
-import { take, first } from 'rxjs/operators';
+import { take, first, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -19,22 +19,20 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   constructor(private store: Store<fromApp.AppState>) { }
 
   @ViewChild('form') form: NgForm;
-  selectedIngredient: Observable<number>;
-  ingredientObs: Observable<Ingredient>;
   ingredientSub: Subscription;
+  selectedIngredient: number;
   ingredient: Ingredient;
   nameIsTaken = false;
 
 
   ngOnInit() {
-    this.selectedIngredient = this.store.select(fromShoppingList.getSelectedIngredientIndex);
-    this.ingredientObs = this.store.select(fromShoppingList.getSelectedIngredient);
-    this.ingredientSub = this.ingredientObs.subscribe((ingredient) => {
-      this.ingredient = ingredient;
+    this.ingredientSub = this.store.select('shoppingList').subscribe((state) => {
+      this.selectedIngredient = state.selectedIngredientIndex;
+      this.ingredient = state.selectedIngredient;
       if (this.ingredient !== null) {
         this.form.setValue({
-          'name': ingredient.name,
-          'amount': ingredient.amount
+          'name': this.ingredient.name,
+          'amount': this.ingredient.amount
         });
       }
     });
