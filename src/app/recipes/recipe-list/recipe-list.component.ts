@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-
-import { RecipeService } from '../recipe.service';
-import Recipe from '../recipe.model';
-import { AppState } from '../../store/app.reducers';
-import { AuthState } from '../../auth/store/auth.reducers';
 import { map } from 'rxjs/operators';
+
+import { AppState } from '../../store/app.reducers';
+import * as fromAuth from '../../auth/store/auth.reducers';
+import * as fromRecipe from '../store/recipe.reducers';
+import Recipe from '../recipe.model';
+import * as RecipeActions from './../store/recipe.actions';
 
 @Component({
   selector: 'app-recipe-list',
@@ -14,36 +15,34 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./recipe-list.component.css']
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
-
   constructor(
-    private recipeService: RecipeService,
-    private store: Store<AppState>) { }
+    private authStore: Store<AppState>,
+    private recipeStore: Store<fromRecipe.RecipeState>
+  ) {}
 
+  recipeStateSub: Subscription;
   recipes: Recipe[];
-  showSpinner = true;
-  recipeSubscription: Subscription;
+  initialFetchingDone: boolean;
   isAuthenticated: Observable<boolean>;
-  authSubscription: Subscription;
+  showSpinner: boolean;
 
   ngOnInit() {
-    this.recipes = this.recipeService.getRecipes();
-    if (this.recipes.length > 0) {
-      this.showSpinner = false;
+    this.recipeStateSub = this.recipeStore
+      .select('recipes')
+      .subscribe((state: fromRecipe.State) => {
+        this.recipes = state.recipes;
+        this.initialFetchingDone = state.initialFetchingDone;
+        this.showSpinner = state.showSpinner;
+      });
+
+    if (!this.initialFetchingDone) {
+      this.recipeStore.dispatch(new RecipeActions.FetchRecipes());
     }
 
-    this.isAuthenticated = this.store.select('auth').pipe(map((authState: AuthState) => {
-      return authState.authenticated;
-    }));
-
-    this.recipeSubscription = this.recipeService.recipeChangesSub.subscribe((recipes: Recipe[]) => {
-      this.recipes = recipes;
-      this.showSpinner = false;
-    });
-
+    this.isAuthenticated = this.authStore.select(fromAuth.getAuthenticated);
   }
 
   ngOnDestroy() {
-    this.recipeSubscription.unsubscribe();
+    this.recipeStateSub.unsubscribe();
   }
-
 }

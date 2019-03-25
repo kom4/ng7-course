@@ -4,7 +4,6 @@ import { HeaderComponent } from './header/header.component';
 import { RecipeService } from '../recipes/recipe.service';
 import { CanDeactivateGuard } from '../guards/can-deactivate-recipe.service';
 import { RecipeResolver } from '../guards/recipeResolveGuard.service';
-import { AuthService } from '../auth/auth.service';
 import { AppRoutingModule } from '../app-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { AuthModule } from '../auth/auth.module';
@@ -30,7 +29,6 @@ import { LoggingInterceptor } from '../shared/logging.interceptor';
     RecipeService,
     RecipeResolver,
     CanDeactivateGuard,
-    AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true }
   ]

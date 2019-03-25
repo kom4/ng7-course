@@ -19,20 +19,21 @@ export class AuthGuard implements CanActivate, OnDestroy {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.authUnsubscribe = firebase.auth().onAuthStateChanged((user: firebase.User) => {
-        if (!user) {
-          resolve(true);
-        } else {
-          this.router.navigate(['/recipes']);
-          resolve(false);
-        }
-      });
+    return new Promise(resolve => {
+      this.authUnsubscribe = firebase
+        .auth()
+        .onAuthStateChanged((user: firebase.User) => {
+          if (!user) {
+            resolve(true);
+          } else {
+            this.router.navigate(['/recipes']);
+            resolve(false);
+          }
+        });
     });
   }
 
   ngOnDestroy() {
     this.authUnsubscribe();
   }
-
 }

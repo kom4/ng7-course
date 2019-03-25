@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as firebase from 'firebase';
 
-import { AuthState } from './auth/store/auth.reducers';
+import { State as AuthState} from './auth/store/auth.reducers';
 import * as AuthActions from './auth/store/auth.actions';
 
 @Component({

@@ -1,27 +1,38 @@
 import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
-import Recipe from '../recipes/recipe.model';
 import { Injectable } from '@angular/core';
-import { RecipeService } from '../recipes/recipe.service';
-import { Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import * as fromRecipe from '../recipes/store/recipe.reducers';
+import Recipe from '../recipes/recipe.model';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Injectable()
-
 export class RecipeResolver implements Resolve<any> {
-
-  recipe = new Subject<Recipe>();
+  recipe: Recipe;
 
   constructor(
-    private recipeService: RecipeService,
+    private store: Store<fromRecipe.RecipeState>,
     private router: Router
   ) {}
 
-  resolve (route: ActivatedRouteSnapshot) {
+  resolve(route: ActivatedRouteSnapshot) {
     const id = +route.paramMap.get('id');
-    const recipe = this.recipeService.getSingleRecipe(id);
-    if (recipe === null) {
+    this.store
+      .select('recipes')
+      .pipe(
+        map((state: fromRecipe.State) => {
+          return state.recipes[id];
+        }),
+        take(1)
+      )
+      .subscribe((recipe: Recipe) => {
+        this.recipe = recipe;
+      });
+
+    if (!this.recipe) {
       this.router.navigate(['recipes']);
     }
-    return [recipe, id];
-  }
 
+    return [this.recipe, id];
+  }
 }

@@ -4,15 +4,13 @@ import Recipe from './recipe.model';
 import Ingredient from '../shared/ingredient.model';
 import { Subject,  } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class RecipeService {
 
   constructor(
-    private httpClient: HttpClient,
-    private authService: AuthService
+    private httpClient: HttpClient
   ) {}
 
   recipeChangesSub = new Subject<Recipe[]>();

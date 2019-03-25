@@ -5,8 +5,10 @@ import { Store } from '@ngrx/store';
 import { RecipeService } from '../../recipes/recipe.service';
 import * as fromApp from '../../store/app.reducers';
 import * as fromAuth from '../../auth/store/auth.reducers';
-import * as AuthActions from '../../auth/store/auth.actions';
-import { AuthService } from 'src/app/auth/auth.service';
+import * as fromRecipe from '../../recipes/store/recipe.reducers';
+import * as RecipeActions from '../../recipes/store/recipe.actions';
+import { LogoutUser } from 'src/app/auth/store/auth.actions';
+import { Router } from '@angular/router';
 
 @Component({
     selector: '<app-header>',
@@ -16,28 +18,29 @@ import { AuthService } from 'src/app/auth/auth.service';
 
 export class HeaderComponent implements OnInit {
 
-  authState: Observable<fromAuth.AuthState>;
+  authState: Observable<fromAuth.State>;
 
     constructor(
       private recipeService: RecipeService,
-      private authService: AuthService,
-      private store: Store<fromApp.AppState>) {}
+      private router: Router,
+      private appStore: Store<fromApp.AppState>,
+      private recipeStore: Store<fromRecipe.RecipeState>) {}
 
     ngOnInit() {
-      this.authState = this.store.select('auth');
+      this.authState = this.appStore.select('auth');
     }
 
     onLogoutUser() {
-      this.authService.logoutUser();
+      this.appStore.dispatch(new LogoutUser());
     }
 
     onSaveData() {
-      this.recipeService.saveRecipesToDatabase()
-        .subscribe();
+      this.appStore.dispatch(new RecipeActions.SaveRecipesToServer());
     }
 
     onFetchData() {
-      this.recipeService.fetchRecipesFromDatabase();
+      this.router.navigate(['/recipes']);
+      this.recipeStore.dispatch(new RecipeActions.FetchRecipes());
     }
 
 }

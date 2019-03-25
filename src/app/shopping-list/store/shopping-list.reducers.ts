@@ -10,10 +10,7 @@ export interface State {
 }
 
 const initialState: State = {
-    ingredients: [
-        new Ingredient('Apple', 3),
-        new Ingredient('Meat', 2)
-    ],
+    ingredients: [],
     selectedIngredient: null,
     selectedIngredientIndex: null,
     addedNewIngredient: null

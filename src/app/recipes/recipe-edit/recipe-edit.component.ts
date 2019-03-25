@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import Recipe from '../recipe.model';
-import { RecipeService } from '../recipe.service';
-import Ingredient from 'src/app/shared/ingredient.model';
 import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import Recipe from '../recipe.model';
+import Ingredient from 'src/app/shared/ingredient.model';
+import * as fromRecipe from '../store/recipe.reducers';
+import * as RecipeActions from '../store/recipe.actions';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -25,8 +28,8 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private recipeService: RecipeService,
-    private router: Router
+    private router: Router,
+    private recipeStore: Store<fromRecipe.RecipeState>
   ) { }
 
 
@@ -77,7 +80,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
     this.form = new FormGroup({
       'name': new FormControl(this.recipe.name, Validators.required),
-      'imagePath': new FormControl(this.recipe.imagePath),
+      'imagePath': new FormControl(this.recipe.imagePath, Validators.required),
       'description': new FormControl(this.recipe.description, Validators.required),
       'ingredients': new FormArray(ingredientsControls)
     });
@@ -127,7 +130,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     this.recipe = new Recipe();
     this.form = new FormGroup({
       'name': new FormControl(null, Validators.required),
-      'imagePath': new FormControl(null),
+      'imagePath': new FormControl(null, Validators.required),
       'description': new FormControl(null, Validators.required),
       'ingredients': new FormArray([])
     });
@@ -142,7 +145,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
 
   onAddNewIngredient() {
-
     if (!this.addingNewIngredient) {
       this.addingNewIngredient = true;
       if (this.lastIngredientChanges)  {
@@ -225,13 +227,11 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     );
 
     if (this.recipeIndex !== null) {
-      this.recipeService.updateRecipe(this.recipeIndex, this.recipe);
-      this.router.navigate(['/recipes', this.recipeIndex]);
+      this.recipeStore.dispatch(new RecipeActions.UpdateRecipe({recipe: this.recipe, index: this.recipeIndex}));
     }
 
     if (this.recipeIndex === null) {
-      const newRecipeIndex = this.recipeService.createRecipe(this.recipe);
-      this.router.navigate(['recipes', newRecipeIndex]);
+      this.recipeStore.dispatch(new RecipeActions.AddRecipe(this.recipe));
     }
 
   }

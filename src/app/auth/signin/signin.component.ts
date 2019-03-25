@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import * as firebase from 'firebase';
 import { Store } from '@ngrx/store';
 
-import { AuthService } from '../auth.service';
 import * as fromApp from '../../store/app.reducers';
 import * as AuthActions from '../store/auth.actions';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signin',
@@ -14,10 +12,9 @@ import { Subscription, Observable } from 'rxjs';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent implements OnInit, OnDestroy {
-  constructor(
-    private authService: AuthService,
-    private store: Store<fromApp.AppState>) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
+  @ViewChild('f') form: NgForm;
   showSpinner = false;
   email = '';
   password = '';
@@ -27,27 +24,26 @@ export class SigninComponent implements OnInit, OnDestroy {
   authSub: Subscription;
 
   ngOnInit() {
-    this.authSub = this.store.select('auth')
-      .subscribe((authState) => {
-        this.emailError = authState.emailError;
-        this.passwordError = authState.passwordError;
-        this.errorMessage = authState.errorMessage;
-      });
+    this.authSub = this.store.select('auth').subscribe(authState => {
+      this.emailError = authState.emailError;
+      this.passwordError = authState.passwordError;
+      this.errorMessage = authState.errorMessage;
+      this.showSpinner = authState.authenticated;
+      this.password = '';
+    });
   }
 
   onSignIn(form: NgForm) {
-    // this.showSpinner = true;
-    // this.emailError = false;
-    // this.passwordError = false;
+    this.showSpinner = true;
     const email = form.value.email;
     const password = form.value.password;
-
-    this.store.dispatch(new AuthActions.TryLogin({email: email, password: password}));
-
+    this.store.dispatch(
+      new AuthActions.TryLogin({ email: email, password: password })
+    );
   }
 
   ngOnDestroy() {
     this.authSub.unsubscribe();
+    this.store.dispatch(new AuthActions.ResetErrors());
   }
-
 }

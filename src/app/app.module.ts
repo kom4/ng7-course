@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
@@ -11,6 +12,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/app.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
+import { environment } from './../environments/environment';
 
 @NgModule({
   declarations: [
@@ -24,9 +26,8 @@ import { AuthEffects } from './auth/store/auth.effects';
     SharedModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([AuthEffects]),
-    StoreDevtoolsModule.instrument({
-      maxAge: 10
-    })
+    StoreRouterConnectingModule,
+    !environment.production ? StoreDevtoolsModule.instrument({maxAge: 10}) : []
   ],
   bootstrap: [
     AppComponent
