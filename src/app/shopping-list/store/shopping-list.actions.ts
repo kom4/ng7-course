@@ -5,6 +5,7 @@ export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
 export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
 export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
+export const RESET_REMOVED_INGREDIENT_INDEX = 'RESET_REMOVED_INGREDIENT_INDEX';
 export const SET_SELECTED_INGREDIENT = 'SET_SELECTED_INGREDIENT';
 
 export class AddIngredient implements Action {
@@ -31,9 +32,14 @@ export class SetSelectedIngredient implements Action {
   constructor(public payload: number) {}
 }
 
+export class ResetRemovedIngredientIndex implements Action {
+  readonly type = RESET_REMOVED_INGREDIENT_INDEX;
+}
+
 export type Actions =
   | AddIngredient
   | AddIngredients
   | UpdateIngredient
   | DeleteIngredient
-  | SetSelectedIngredient;
+  | SetSelectedIngredient
+  | ResetRemovedIngredientIndex;

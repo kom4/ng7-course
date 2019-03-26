@@ -4,12 +4,15 @@
     </app-shopping-edit>
     <hr>
     <ul class="list-group">
-      <a
+      <a      
       class="list-group-item"
       style="cursor: pointer"
-      *ngFor="let ingredient of (ingredients$ | async); let i = index"
+      *ngFor="let ingredient of (ingredients$ | async); let i = index; let last = last"
       [ngClass]="{'highlighted': (addedNewIngredient$ | async) === i, 'active': (selected$ | async) === i}"
-      (click)="setSelected(i)">
+      (click)="setSelected(i)"
+      [@moveIn]="(addedNewIngredient$ | async) === i && last ? 'moved' : ''"
+      [@moveOut]="(removedIngredientIndex | async) === i"
+      >
       {{ ingredient.name }} ({{ ingredient.amount }})
       </a>
     </ul>

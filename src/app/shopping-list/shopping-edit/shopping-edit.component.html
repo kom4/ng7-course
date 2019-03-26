@@ -35,12 +35,12 @@
             class="btn btn-success"
             type="submit">{{ selectedIngredient !== null ? 'Update' : 'Add' }}</button>
           <button
-            [disabled]="!((selectedIngredient | async) !== null)"
+            [disabled]="!(selectedIngredient !== null)"
             class="btn btn-danger"
             type="button"
             (click)="deleteIngredient()">Delete</button>
           <button
-            [disabled]="!((selectedIngredient | async) !== null) && form.pristine"
+            [disabled]="!(selectedIngredient !== null) && form.pristine"
             class="btn btn-primary"
             type="button"
             (click)="clear()">Clear</button>

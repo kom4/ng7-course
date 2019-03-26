@@ -7,13 +7,15 @@ export interface State {
     selectedIngredient: Ingredient;
     selectedIngredientIndex: number;
     addedNewIngredient: number;
+    removedIngredientIndex: number;
 }
 
 const initialState: State = {
     ingredients: [],
     selectedIngredient: null,
     selectedIngredientIndex: null,
-    addedNewIngredient: null
+    addedNewIngredient: null,
+    removedIngredientIndex: null,
 };
 
 export function shoppingListReducer(state = initialState, action: ShoppingListActions.Actions) {
@@ -74,6 +76,7 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
             };
 
         case ShoppingListActions.DELETE_INGREDIENT:
+            const removedIngredientIndex = state.selectedIngredientIndex;
             copiedIngredients.splice(state.selectedIngredientIndex, 1);
             return {
                 ...state,
@@ -81,6 +84,7 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
                 selectedIngredient: null,
                 selectedIngredientIndex: null,
                 addedNewIngredient: null,
+                removedIngredientIndex: removedIngredientIndex
             };
 
         case ShoppingListActions.SET_SELECTED_INGREDIENT:
@@ -90,6 +94,12 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
                 selectedIngredient: selectedIngredient,
                 selectedIngredientIndex: action.payload,
                 addedNewIngredient: null
+            };
+
+        case ShoppingListActions.RESET_REMOVED_INGREDIENT_INDEX:
+            return {
+                ...state,
+                removedIngredientIndex: null
             };
 
         default:
@@ -102,5 +112,6 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
 export const getShoppingListState = createFeatureSelector<State>('shoppingList');
 export const getIngredients = createSelector(getShoppingListState, (state: State) => state.ingredients);
 export const getSelectedIngredient = createSelector(getShoppingListState, (state: State) => state.selectedIngredient);
-export const getSelectedIngredientIndex = createSelector(getShoppingListState, (state: State) => state.selectedIngredientIndex );
-export const getAddedNewIngredient = createSelector(getShoppingListState, (state: State) => state.addedNewIngredient );
+export const getSelectedIngredientIndex = createSelector(getShoppingListState, (state: State) => state.selectedIngredientIndex);
+export const getRemovedIngredientIndex = createSelector(getShoppingListState, (state: State) => state.removedIngredientIndex );
+export const getAddedNewIngredient = createSelector(getShoppingListState, (state: State) => state.addedNewIngredient);
