@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 import { State as AuthState } from './auth/store/auth.reducers';
 import * as AuthActions from './auth/store/auth.actions';
@@ -21,11 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     firebase.initializeApp({
       apiKey: 'AIzaSyBn8Gnz4CzWddwHBt0E03BxLzRcfd8aUK8',
-      authDomain: 'recipeapp-4444.firebaseapp.com',
-      databaseURL: 'https://recipeapp-4444.firebaseio.com',
-      projectId: 'recipeapp-4444',
-      storageBucket: 'recipeapp-4444.appspot.com',
-      messagingSenderId: '168472527374'
+      authDomain: 'recipeapp-4444.firebaseapp.com'
     });
     this.authUnsubscribe = firebase.auth().onAuthStateChanged(user => {
       this.showSpinner = false;

@@ -6,7 +6,7 @@ import {
 } from '@angular/router';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 
 import * as fromApp from '../store/app.reducers';
 

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as AuthActions from './auth.actions';
 import { map, switchMap, catchError, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
