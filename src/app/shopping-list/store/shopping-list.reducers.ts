@@ -7,14 +7,20 @@ export interface State {
     selectedIngredient: Ingredient;
     selectedIngredientIndex: number;
     addedNewIngredient: number;
+    updatedOldIngredient: number;
     removedIngredientIndex: number;
 }
 
 const initialState: State = {
-    ingredients: [],
+    ingredients: [
+        new Ingredient('Tomato', 2),
+        new Ingredient('Onion', 1),
+        new Ingredient('Meat', 3)
+    ],
     selectedIngredient: null,
     selectedIngredientIndex: null,
     addedNewIngredient: null,
+    updatedOldIngredient: null,
     removedIngredientIndex: null,
 };
 
@@ -29,15 +35,24 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
             });
             if (index > -1) {
                 copiedIngredients[index].amount += action.payload.amount;
+                return {
+                    ...state,
+                    ingredients: copiedIngredients,
+                    addedNewIngredient: null,
+                    updatedOldIngredient: index,
+                    removedIngredientIndex: null,
+                };
             } else {
                 copiedIngredients.push(action.payload);
                 index = copiedIngredients.length - 1;
+                return {
+                    ...state,
+                    ingredients: copiedIngredients,
+                    addedNewIngredient: index,
+                    updatedOldIngredient: null,
+                    removedIngredientIndex: null,
+                };
             }
-            return {
-                ...state,
-                ingredients: copiedIngredients,
-                addedNewIngredient: index
-            };
 
         case ShoppingListActions.ADD_INGREDIENTS:
             if (copiedIngredients.length === 0) {
@@ -62,7 +77,10 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
             }
             return {
                 ...state,
-                ingredients: copiedIngredients
+                ingredients: copiedIngredients,
+                addedNewIngredient: null,
+                updatedOldIngredient: null,
+                removedIngredientIndex: null,
             };
 
         case ShoppingListActions.UPDATE_INGREDIENT:
@@ -72,7 +90,8 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
                 ingredients: copiedIngredients,
                 selectedIngredient: null,
                 selectedIngredientIndex: null,
-                addedNewIngredient: state.selectedIngredientIndex,
+                updatedOldIngredient: state.selectedIngredientIndex,
+                removedIngredientIndex: null,
             };
 
         case ShoppingListActions.DELETE_INGREDIENT:
@@ -84,7 +103,8 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
                 selectedIngredient: null,
                 selectedIngredientIndex: null,
                 addedNewIngredient: null,
-                removedIngredientIndex: removedIngredientIndex
+                updatedOldIngredient: null,
+                removedIngredientIndex: null,
             };
 
         case ShoppingListActions.SET_SELECTED_INGREDIENT:
@@ -93,12 +113,23 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
                 ...state,
                 selectedIngredient: selectedIngredient,
                 selectedIngredientIndex: action.payload,
-                addedNewIngredient: null
+                addedNewIngredient: null,
+                updatedOldIngredient: null,
+                removedIngredientIndex: null
             };
 
-        case ShoppingListActions.RESET_REMOVED_INGREDIENT_INDEX:
+        case ShoppingListActions.SET_REMOVED_INGREDIENT:
             return {
                 ...state,
+                removedIngredientIndex: state.selectedIngredientIndex,
+                selectedIngredientIndex: null
+            };
+
+        case ShoppingListActions.RESET_INGREDIENT_INDEXES:
+            return {
+                ...state,
+                addedNewIngredient: null,
+                updatedOldIngredient: null,
                 removedIngredientIndex: null
             };
 
@@ -115,3 +146,5 @@ export const getSelectedIngredient = createSelector(getShoppingListState, (state
 export const getSelectedIngredientIndex = createSelector(getShoppingListState, (state: State) => state.selectedIngredientIndex);
 export const getRemovedIngredientIndex = createSelector(getShoppingListState, (state: State) => state.removedIngredientIndex );
 export const getAddedNewIngredient = createSelector(getShoppingListState, (state: State) => state.addedNewIngredient);
+export const getUpdatedOldIngredient = createSelector(getShoppingListState, (state: State) => state.updatedOldIngredient);
+

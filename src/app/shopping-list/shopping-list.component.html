@@ -8,13 +8,14 @@
       class="list-group-item"
       style="cursor: pointer"
       *ngFor="let ingredient of (ingredients$ | async); let i = index; let last = last"
-      [ngClass]="{'highlighted': (addedNewIngredient$ | async) === i, 'active': (selected$ | async) === i}"
+      [ngClass]="{'highlighted': ((addedNewIngredient$ | async) === i || (updatedOldIngredient$ | async) === i), 'active': (selected$ | async) === i}"
       (click)="setSelected(i)"
-      [@moveIn]="(addedNewIngredient$ | async) === i && last ? 'moved' : ''"
-      [@moveOut]="(removedIngredientIndex | async) === i"
+      [@moveIn]="(addedNewIngredient$ | async) === i && last ? 'normal' : ''"
+      [@moveOut]="removedIndex === i ? 'normal' : ''"
       >
       {{ ingredient.name }} ({{ ingredient.amount }})
       </a>
     </ul>
+    {{ removedIndex }}
   </div>
 </div>

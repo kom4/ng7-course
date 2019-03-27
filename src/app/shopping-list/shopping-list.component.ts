@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import Ingredient from '../shared/ingredient.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as ShoppingListActions from './store/shopping-list.actions';
 import * as fromApp from '../store/app.reducers';
@@ -13,26 +13,27 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./shopping-list.component.css'],
   animations: [
     trigger('moveIn', [
-      state('moved', style({
+      state('normal', style({
         'transform': 'translateX(0px)',
         'opacity': 1
       })),
-      transition('void => moved', [
+      transition('void => normal', [
         style({
           'transform': 'translateX(-100px)',
           'opacity': 0
         }),
         animate(200)
-      ])
+      ]),
     ]),
     trigger('moveOut', [
-      transition('* => void', [
-        animate(200,  style({
-          'transform': 'translateX(100px)',
-          'opacity': 0,
-          'background-color': 'red'
-        }))
-      ])
+    transition('normal => void', [
+      animate(200,
+      style({
+        'transform': 'translateX(100px)',
+        'opacity': 0,
+        'background-color': 'red'
+      })),
+    ])
     ])
   ]
 })
@@ -43,13 +44,21 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   selected$: Observable<number>;
   ingredients$: Observable<Ingredient[]>;
   addedNewIngredient$: Observable<number>;
-  removedIngredientIndex: Observable<number>;
+  updatedOldIngredient$: Observable<number>;
+  removedIngredientIndex$: Subscription;
+  removedIndex: number = null;
 
   ngOnInit() {
     this.ingredients$ = this.store.select(fromShoppingList.getIngredients);
     this.selected$ = this.store.select(fromShoppingList.getSelectedIngredientIndex);
     this.addedNewIngredient$ = this.store.select(fromShoppingList.getAddedNewIngredient);
-    this.removedIngredientIndex = this.store.select(fromShoppingList.getRemovedIngredientIndex);
+    this.updatedOldIngredient$ = this.store.select(fromShoppingList.getUpdatedOldIngredient);
+    this.removedIngredientIndex$ = this.store.select(fromShoppingList.getRemovedIngredientIndex).subscribe((removedIndex) => {
+      this.removedIndex = removedIndex;
+      if (this.removedIndex !== null) {
+        this.store.dispatch(new ShoppingListActions.DeleteIngredient());
+      }
+    });
   }
 
   setSelected(index: number) {
