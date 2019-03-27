@@ -4,6 +4,8 @@
     </app-recipe-list>
   </div>
   <div class="col-md-7">
-    <router-outlet></router-outlet>
+    <div id="recipeDisplay" [@routeAnimation]="getDepth(myOutlet)">
+      <router-outlet #myOutlet="outlet"></router-outlet>
+    </div>
   </div>
 </div>

@@ -9,11 +9,12 @@ import * as ShoppingListActions from '../../shopping-list/store/shopping-list.ac
 import * as fromApp from '../../store/app.reducers';
 import * as RecipeActions from './../store/recipe.actions';
 import { State } from '../../auth/store/auth.reducers';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
-  styleUrls: ['./recipe-detail.component.css']
+  styleUrls: ['./recipe-detail.component.css'],
 })
 export class RecipeDetailComponent implements OnInit, OnDestroy {
 

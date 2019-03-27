@@ -12,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
 import { recipeReducers } from './store/recipe.reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { RecipeEffects } from './store/recipe.effects';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [

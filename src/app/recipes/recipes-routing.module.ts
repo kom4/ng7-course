@@ -7,10 +7,10 @@ import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 import { RecipeResolver } from '../guards/recipeResolveGuard.service';
 
 const recipesRoutes: Routes = [
-    { path: '', component: RecipesComponent, children: [
-        { path: 'new', component: RecipeEditComponent, canDeactivate: [CanDeactivateGuard] },
-        { path: ':id', component: RecipeDetailComponent, resolve: {recipeData: RecipeResolver} },
-        { path: ':id/edit', component: RecipeEditComponent, resolve: {recipeData: RecipeResolver}, canDeactivate: [CanDeactivateGuard] },
+    { path: '', component: RecipesComponent, data: {depth: 1}, children: [
+        { path: 'new', component: RecipeEditComponent, data: {depth: 2}, canDeactivate: [CanDeactivateGuard] },
+        { path: ':id', component: RecipeDetailComponent, data: {depth: 3}, resolve: {recipeData: RecipeResolver} },
+        { path: ':id/edit', component: RecipeEditComponent, data: {depth: 4}, resolve: {recipeData: RecipeResolver}, canDeactivate: [CanDeactivateGuard] },
       ]},
 ];
 
