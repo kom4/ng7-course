@@ -7,7 +7,6 @@ export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
 export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
 export const RESET_INGREDIENT_INDEXES = 'RESET_INGREDIENT_INDEXES';
 export const SET_SELECTED_INGREDIENT = 'SET_SELECTED_INGREDIENT';
-export const SET_REMOVED_INGREDIENT = 'SET_REMOVED_INGREDIENT';
 
 export class AddIngredient implements Action {
   readonly type = ADD_INGREDIENT;
@@ -37,15 +36,10 @@ export class ResetIngredientIndexes implements Action {
   readonly type = RESET_INGREDIENT_INDEXES;
 }
 
-export class SetRemovedIngredient implements Action {
-  readonly type = SET_REMOVED_INGREDIENT;
-}
-
 export type Actions =
   | AddIngredient
   | AddIngredients
   | UpdateIngredient
   | DeleteIngredient
   | SetSelectedIngredient
-  | ResetIngredientIndexes
-  | SetRemovedIngredient;
+  | ResetIngredientIndexes;
