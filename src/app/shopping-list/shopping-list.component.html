@@ -5,7 +5,7 @@
     <hr>
     <ul
       class="list-group"
-      @fadeIn>
+      @moveInList>
       <a
       class="list-group-item"
       style="cursor: pointer"
@@ -13,6 +13,10 @@
       [ngClass]="{'highlighted': ((addedNewIngredient$ | async) === i || (updatedOldIngredient$ | async) === i), 'active': (selected$ | async) === i}"
       (click)="setSelected(i)"
       [@moveIn]="(addedNewIngredient$ | async) === i && last ? 'normal' : ''"
+      [@moveOut]="isDeleted === i ? 'move' : 'normal'"
+      (mouseover)="hoverIndex = i"
+      (mouseout)="hoverIndex = null"
+      [@hover]="hoverIndex === i ? 'large' : 'normal'"
       >
       {{ ingredient.name }} ({{ ingredient.amount }})
       </a>
