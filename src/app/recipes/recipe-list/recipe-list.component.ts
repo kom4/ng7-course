@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { trigger, style, state, transition, animate, query, stagger } from '@angular/animations';
+import { trigger, style, transition, animate, query, stagger, state } from '@angular/animations';
 
 import { AppState } from '../../store/app.reducers';
 import * as fromAuth from '../../auth/store/auth.reducers';
@@ -19,12 +19,13 @@ import * as RecipeActions from './../store/recipe.actions';
         transition(':enter', [
           query('a', style({transform: 'translateX(-100%)', opacity: 0}), {optional: true}),
           query('a',
-            stagger('200ms', [
-              animate('300ms', style({transform: 'translateX(0px)', opacity: 1}))
+            stagger('50ms', [
+              animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
           ]), {optional: true})
         ]),
       ]),
-      trigger('moveOut', [
+
+      trigger('move', [
         transition(':leave', [
           query('a', style({backgroundColor: 'red'})),
           query('a', [
@@ -38,14 +39,18 @@ import * as RecipeActions from './../store/recipe.actions';
           ])
         ])
        ]),
+
+       trigger('highlight', [
+         state('highlightIt', style({backgroundColor: 'lightgreen'})),
+         transition('void => highlightIt', [
+          animate(200)
+         ])
+       ])
     ]
 
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
-  constructor(
-    private authStore: Store<AppState>,
-    private recipeStore: Store<fromRecipe.RecipeState>
-  ) {}
+  constructor(private store: Store<AppState>) {}
 
   recipeStateSub: Subscription;
   recipes: Recipe[];
@@ -53,26 +58,28 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   isAuthenticated: Observable<boolean>;
   showSpinner: boolean;
   addedNewRecipe = false;
+  updatedRecipe: number;
 
   ngOnInit() {
-    this.recipeStateSub = this.recipeStore
+    this.recipeStateSub = this.store
       .select('recipes')
       .subscribe((state: fromRecipe.State) => {
         this.recipes = state.recipes;
         this.initialFetchingDone = state.initialFetchingDone;
         this.showSpinner = state.showSpinner;
         this.addedNewRecipe = state.addedNewRecipe;
+        this.updatedRecipe = state.updatedRecipe;
       });
 
     if (!this.initialFetchingDone) {
-      this.recipeStore.dispatch(new RecipeActions.FetchRecipes());
+      this.store.dispatch(new RecipeActions.FetchRecipes());
     }
 
-    this.isAuthenticated = this.authStore.select(fromAuth.getAuthenticated);
+    this.isAuthenticated = this.store.select(fromAuth.getAuthenticated);
   }
 
   clearIndex() {
-    this.authStore.dispatch(new RecipeActions.ResetIndex());
+    this.store.dispatch(new RecipeActions.ResetIndex());
   }
 
   ngOnDestroy() {

@@ -12,14 +12,14 @@
   </ng-template>
   </div>
   <div class="row">
-    <div class="col-xs-12">
-      <app-recipe-item
-        @recipeListAnimation
+    <div class="col-xs-12" @recipeListAnimation>
+      <app-recipe-item        
         *ngFor="let recipeItem of recipes, let i = index; let last = last"
         [recipe]="recipeItem"
         [index]="i"
-        [@moveOut]="(addedNewRecipe && last) ? 'moveIn' : ''"
-        (@moveOut.done)="clearIndex()"
+        [@highlight]="updatedRecipe === i ? 'highlightIt' : ''"
+        [@move]="(addedNewRecipe && last) ? 'moveIn' : ''"
+        (@move.done)="clearIndex()"
         >
       </app-recipe-item>
     </div>

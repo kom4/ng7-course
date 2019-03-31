@@ -12,13 +12,15 @@ export interface State {
     initialFetchingDone: boolean;
     showSpinner: boolean;
     addedNewRecipe: boolean;
+    updatedRecipe: number;
 }
 
 const initialState: State = {
     recipes: [],
     initialFetchingDone: false,
     showSpinner: false,
-    addedNewRecipe: false
+    addedNewRecipe: false,
+    updatedRecipe: null
 };
 
 
@@ -47,7 +49,8 @@ export function recipeReducers (state = initialState, action: RecipeActions.Acti
             copiedRecipes[action.payload.index] = action.payload.recipe;
             return {
                 ...state,
-                recipes: copiedRecipes
+                recipes: copiedRecipes,
+                updatedRecipe: action.payload.index
             };
 
         case RecipeActions.DELETE_RECIPE:
@@ -66,7 +69,8 @@ export function recipeReducers (state = initialState, action: RecipeActions.Acti
         case RecipeActions.RESET_INDEX:
             return {
                 ...state,
-                addedNewRecipe: false
+                addedNewRecipe: false,
+                // updatedRecipe: null
             };
 
         default:
