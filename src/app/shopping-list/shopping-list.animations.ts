@@ -1,8 +1,8 @@
-import { trigger, style, transition, animate, query, stagger, state, keyframes } from '@angular/animations';
+import { trigger, style, transition, animate, query, stagger, state } from '@angular/animations';
 
 export const animations = [
     trigger('moveInList', [
-        transition('void => *', [
+        transition(':enter', [
           query('a', style({ transform: 'translateX(-100px)', opacity: 0}), {optional: true}),
           query('a',
             stagger('50ms', [

@@ -12,13 +12,16 @@
   </ng-template>
   </div>
   <div class="row">
-      <div class="col-xs-12">
-          <app-recipe-item
-              *ngFor="let recipeItem of recipes, let i = index"
-              [recipe]="recipeItem"
-              [index]="i"
-              >
-          </app-recipe-item>
-      </div>
+    <div class="col-xs-12">
+      <app-recipe-item
+        @recipeListAnimation
+        *ngFor="let recipeItem of recipes, let i = index; let last = last"
+        [recipe]="recipeItem"
+        [index]="i"
+        [@moveOut]="(addedNewRecipe && last) ? 'moveIn' : ''"
+        (@moveOut.done)="clearIndex()"
+        >
+      </app-recipe-item>
+    </div>
   </div>
 </ng-template>

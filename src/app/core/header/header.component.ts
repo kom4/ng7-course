@@ -13,7 +13,15 @@ import { Router } from '@angular/router';
 @Component({
     selector: '<app-header>',
     templateUrl: './header.component.html',
-    // styleUrls: ['./header.component.css']
+    styles: [
+      `nav {
+        z-index: 100
+      }
+      * {
+        user-select: none;
+      }
+      `
+    ]
 })
 
 export class HeaderComponent implements OnInit {

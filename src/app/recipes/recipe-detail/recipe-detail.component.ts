@@ -9,12 +9,25 @@ import * as ShoppingListActions from '../../shopping-list/store/shopping-list.ac
 import * as fromApp from '../../store/app.reducers';
 import * as RecipeActions from './../store/recipe.actions';
 import { State } from '../../auth/store/auth.reducers';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, style, transition, animate, query, group, state } from '@angular/animations';
 
 @Component({
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.css'],
+  animations: [
+    trigger('animateRecipes', [
+
+      transition('* => up', [
+        query('.recipe', style({transform: 'translateY(-50%)'}), {optional: true}),
+        query('.recipe', animate('300ms ease-out', style({transform: 'translateY(0px)'})))
+      ]),
+      transition('* => down', [
+        query('.recipe', style({transform: 'translateY(50%)'}), {optional: true}),
+        query('.recipe', animate('300ms ease-out', style({transform: 'translateY(0px)'})))
+      ]),
+    ])
+  ]
 })
 export class RecipeDetailComponent implements OnInit, OnDestroy {
 
@@ -28,6 +41,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   recipeIndex: number = null;
   recipeSubscription: Subscription;
   isAuthenticated: Observable<boolean>;
+  routeParamsSub: Subscription;
+  recipeAnimationNumber: number;
+  animationDirection: string;
 
   ngOnInit() {
     this.recipeSubscription = this.route.data.subscribe((data: Recipe) => {
@@ -38,6 +54,10 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
       return authState.authenticated;
     }));
 
+    this.routeParamsSub = this.route.params.subscribe((params) => {
+      this.animationDirection = (+params['id'] > this.recipeAnimationNumber) ? 'down' : 'up';
+      this.recipeAnimationNumber = +params['id'];
+    });
   }
 
   ingredientsToShoppingList() {
@@ -54,6 +74,11 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.recipeSubscription.unsubscribe();
+    this.routeParamsSub.unsubscribe();
+  }
+
+  afterAnimation () {
+    this.animationDirection = '';
   }
 
 }

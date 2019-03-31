@@ -9,6 +9,7 @@ export const DELETE_RECIPE = 'DELETE_RECIPE';
 export const SHOW_SPINNER = 'SHOW_SPINNER';
 export const SAVE_RECIPES_TO_SERVER = 'SAVE_RECIPES_TO_SERVER';
 export const UPDATE_RECIPE = 'UPDATE_RECIPE';
+export const RESET_INDEX = 'RESET_INDEX';
 
 export class FetchRecipes implements Action {
   readonly type = FETCH_RECIPES;
@@ -42,6 +43,11 @@ export class SaveRecipesToServer implements Action {
   readonly type = SAVE_RECIPES_TO_SERVER;
 }
 
+export class ResetIndex implements Action {
+  readonly type = RESET_INDEX;
+}
+
+
 export type Actions =
   | AddRecipe
   | FetchRecipes
@@ -50,4 +56,5 @@ export type Actions =
   | UpdateRecipe
   | DeleteRecipe
   | ShowSpinner
-  | SaveRecipesToServer;
+  | SaveRecipesToServer
+  | ResetIndex;
